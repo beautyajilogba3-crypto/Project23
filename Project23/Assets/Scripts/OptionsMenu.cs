@@ -7,6 +7,9 @@ public class OptionsMenu : MonoBehaviour
 
     void Start()
     {
+        volumeSlider.minValue = 0f;
+        volumeSlider.maxValue = 1f;
+
         volumeSlider.value = AudioListener.volume;
     }
 
