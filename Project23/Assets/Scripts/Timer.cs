@@ -28,11 +28,8 @@ public class Timer : MonoBehaviour
         {
             if (timeRemaining > 0)            //decrease time val by 1 if its not 0 yet
             {
-<<<<<<< Updated upstream
-                timeRemaining -= Time.deltaTime;
-=======
                 timeRemaining -= Time.deltaTime;    //delta time as the change in time
->>>>>>> Stashed changes
+
                 DisplayTime(timeRemaining);
             }
             else
@@ -46,11 +43,9 @@ public class Timer : MonoBehaviour
                     TimeUp();
                 }
             }
-<<<<<<< Updated upstream
-            if (timeRemaining <= 10f)         //time display getts bigger and turns red when its 10 sec till 0
-=======
+
             if (timeRemaining <= 10f)         //time display getts bigger and turns red when its 10 sec till 0 sec
->>>>>>> Stashed changes
+
             {
                 timetext.color = Color.red;
                 timetext.fontSize = 37;
