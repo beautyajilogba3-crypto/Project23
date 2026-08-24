@@ -163,22 +163,26 @@ public class FPController : MonoBehaviour
             Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
             Debug.DrawRay(cameraTransform.position, cameraTransform.forward * pickupRange, Color.red);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+            RaycastHit[] hits = Physics.RaycastAll(ray, pickupRange);
+            System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+            PickUpObject pickUp = null;
+            foreach (RaycastHit hit in hits)
             {
-                Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
-                PickUpObject pickUp = hit.collider.GetComponentInParent<PickUpObject>();
-
+                pickUp = hit.collider.GetComponentInParent<PickUpObject>();
                 if (pickUp != null)
-                {
-                    pickUp.PickUp(holdPoint);
-                    heldObject = pickUp;
+                    break;
+            }
 
-                    Debug.Log("Picked up: " + pickUp.gameObject.name);
-                }
-                else
-                {
-                    Debug.Log("Object has no PickUpObject script.");
-                }
+            if (pickUp != null)
+            {
+                pickUp.PickUp(holdPoint);
+                heldObject = pickUp;
+                Debug.Log("Picked up: " + pickUp.gameObject.name);
+            }
+            else if (hits.Length > 0)
+            {
+                Debug.Log("Raycast hit: " + hits[0].collider.gameObject.name + ", but it has no PickUpObject script.");
             }
             else
             {
