@@ -48,12 +48,12 @@ public class Timer : MonoBehaviour
 
             {
                 timetext.color = Color.red;
-                timetext.fontSize = 37;
+                timetext.fontSize = 40;
             }
             else
             {
                 timetext.color = Color.darkGreen;
-                timetext.fontSize = 30;
+                timetext.fontSize = 35;
             }
         }
     }
@@ -76,7 +76,7 @@ public class Timer : MonoBehaviour
     void TimeUp()                   //time up fucntion
     {
         if (messageText != null)
-            messageText.text = "GAME OVER";
+            messageText.text = "You did not make it out with the artifact piece.               GAME OVER";
 
         Debug.Log("Time's up! Now returning to main menu");
 
@@ -89,5 +89,11 @@ public class Timer : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;          //after teleporting back to the menu, the cursor was gone and nothing could
         Cursor.visible = true;                     //be clicked. these 2 lines resolve that issue
+    }
+
+    public void StopTimer()                    //stop timer if player escaped with obj
+    {
+        timerrunning = false;
+        CancelInvoke(nameof(GoToMainMenu));    
     }
 }

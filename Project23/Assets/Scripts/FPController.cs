@@ -25,6 +25,7 @@ public class FPController : MonoBehaviour
     public float pickupRange = 3f;
     public Transform holdPoint;
     private PickUpObject heldObject;
+    public bool IsHoldingObject => heldObject != null;
     [Header("Throw Settings")]
     public float throwForce = 10f;
     public float throwUpwardBoost = 1f;
@@ -34,6 +35,7 @@ public class FPController : MonoBehaviour
     private Vector3 velocity;
     // Stores the player's current vertical movement, including gravity.
     private float verticalRotation = 0f;
+
     // Awake runs once when the GameObject is first loaded.
     private void Awake()
     {
@@ -190,4 +192,6 @@ public class FPController : MonoBehaviour
         heldObject.Throw(impulse);
         heldObject = null;
     }
+
+
 }
