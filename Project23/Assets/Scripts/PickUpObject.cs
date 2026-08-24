@@ -20,10 +20,7 @@ public class PickUpObject : MonoBehaviour
         rb.useGravity = true;
         transform.SetParent(null);
     }
-    public void MoveToHoldPoint(Vector3 targetPosition)
-    {
-        rb.MovePosition(targetPosition);
-    }
+   
     public void Throw(Vector3 impulse)
     {
         transform.SetParent(null);
