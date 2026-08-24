@@ -25,6 +25,7 @@ public class FPController : MonoBehaviour
     public float pickupRange = 3f;
     public Transform holdPoint;
     private PickUpObject heldObject;
+    public bool IsHoldingObject => heldObject != null;
     [Header("Throw Settings")]
     public float throwForce = 10f;
     public float throwUpwardBoost = 1f;
@@ -34,6 +35,7 @@ public class FPController : MonoBehaviour
     private Vector3 velocity;
     // Stores the player's current vertical movement, including gravity.
     private float verticalRotation = 0f;
+
     // Awake runs once when the GameObject is first loaded.
     private void Awake()
     {
@@ -46,11 +48,6 @@ public class FPController : MonoBehaviour
     {
         HandleMovement();
         HandleLook();
-
-        if (heldObject != null)
-        {
-            heldObject.MoveToHoldPoint(holdPoint.position);
-        }
     }
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -158,26 +155,42 @@ public class FPController : MonoBehaviour
     }
     public void OnPickUp(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
+        if (!context.performed)
+            return;
+
         if (heldObject == null)
         {
-            Ray ray = new Ray(cameraTransform.position,
-            cameraTransform.forward);
+            Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
+            Debug.DrawRay(cameraTransform.position, cameraTransform.forward * pickupRange, Color.red);
+
             if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
             {
-                PickUpObject pickUp =
-                hit.collider.GetComponent<PickUpObject>();
+                Debug.Log("Raycast hit: " + hit.collider.gameObject.name);
+                PickUpObject pickUp = hit.collider.GetComponentInParent<PickUpObject>();
+
                 if (pickUp != null)
                 {
                     pickUp.PickUp(holdPoint);
                     heldObject = pickUp;
+
+                    Debug.Log("Picked up: " + pickUp.gameObject.name);
                 }
+                else
+                {
+                    Debug.Log("Object has no PickUpObject script.");
+                }
+            }
+            else
+            {
+                Debug.Log("Raycast did not hit anything.");
             }
         }
         else
         {
             heldObject.Drop();
             heldObject = null;
+
+            Debug.Log("Object dropped.");
         }
     }
     public void OnThrow(InputAction.CallbackContext context)
@@ -190,4 +203,6 @@ public class FPController : MonoBehaviour
         heldObject.Throw(impulse);
         heldObject = null;
     }
+
+
 }
