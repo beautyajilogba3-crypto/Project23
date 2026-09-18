@@ -12,10 +12,7 @@ public class FPController : MonoBehaviour
     public Transform cameraTransform;
     public float lookSensitivity = 2f;
     public float verticalLookLimit = 90f;
-    [Header("Shooting")]
-    public GameObject bulletPrefab;
-    public Transform gunPoint;
-    public float bulletForce = 500f;
+
     [Header("Crouch Settings")]
     public float crouchHeight = 1f;
     public float standHeight = 2f;
@@ -116,30 +113,8 @@ public class FPController : MonoBehaviour
             // height while accounting for gravity.
         }
     }
-    public void OnShoot(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-        {
-            Shoot();
-        }
-    }
-    private void Shoot()
-    {
-        if (bulletPrefab != null && gunPoint != null)
-        {
-            GameObject bullet = Instantiate(
-            bulletPrefab,
-            gunPoint.position,
-            gunPoint.rotation
-            );
-            Rigidbody rb = bullet.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.AddForce(gunPoint.forward * bulletForce);
-                // Adjust the force value as needed
-            }
-        }
-    }
+    
+ 
     public void OnCrouch(InputAction.CallbackContext context)
     {
         if (context.performed)
