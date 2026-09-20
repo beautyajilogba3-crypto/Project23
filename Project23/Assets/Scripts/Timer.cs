@@ -78,7 +78,6 @@ public class Timer : MonoBehaviour
         if (messageText != null)
             messageText.text = "You did not make it out with the artifact piece.               GAME OVER";
 
-        Debug.Log("Time's up! Now returning to main menu");
 
         Invoke(nameof(GoToMainMenu), delay);       //call delay and then loadscene to go back to main menu
     }
