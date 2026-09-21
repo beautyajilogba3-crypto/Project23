@@ -8,9 +8,14 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause()
     {
+        Debug.Log("PAUSE WAS CLICKED");
+
         pauseMenu.SetActive(true);
         hud.SetActive(false);
         Time.timeScale = 0f;
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void Resume()
