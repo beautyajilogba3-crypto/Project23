@@ -48,12 +48,12 @@ public class Timer : MonoBehaviour
 
             {
                 timetext.color = Color.red;
-                timetext.fontSize = 40;
+                timetext.fontSize = 85;
             }
             else
             {
                 timetext.color = Color.darkGreen;
-                timetext.fontSize = 35;
+                timetext.fontSize = 85;
             }
         }
     }
@@ -78,7 +78,6 @@ public class Timer : MonoBehaviour
         if (messageText != null)
             messageText.text = "You did not make it out with the artifact piece.               GAME OVER";
 
-        Debug.Log("Time's up! Now returning to main menu");
 
         Invoke(nameof(GoToMainMenu), delay);       //call delay and then loadscene to go back to main menu
     }

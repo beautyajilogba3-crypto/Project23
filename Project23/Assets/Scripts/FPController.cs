@@ -141,6 +141,18 @@ public class FPController : MonoBehaviour
             RaycastHit[] hits = Physics.RaycastAll(ray, pickupRange);
             System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
 
+            // Check for an artefact first - instant collect, no holding.
+            foreach (RaycastHit artefactHit in hits)
+            {
+                Artifactcollector artefact = artefactHit.collider.GetComponentInParent<Artifactcollector>();
+                if (artefact != null)
+                {
+                    artefact.Collect();
+                    Debug.Log("Collected artefact: " + artefact.gameObject.name);
+                    return;
+                }
+            }
+
             PickUpObject pickUp = null;
             foreach (RaycastHit hit in hits)
             {
@@ -182,6 +194,8 @@ public class FPController : MonoBehaviour
         heldObject.Throw(impulse);
         heldObject = null;
     }
+
+
 
 
 }
