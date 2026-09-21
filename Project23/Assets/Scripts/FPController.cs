@@ -32,8 +32,6 @@ public class FPController : MonoBehaviour
     private Vector3 velocity;
     // Stores the player's current vertical movement, including gravity.
     private float verticalRotation = 0f;
-    private bool isCrouching = false;
-    public bool IsCrouching => isCrouching;
 
     // Awake runs once when the GameObject is first loaded.
     private void Awake()
@@ -115,21 +113,19 @@ public class FPController : MonoBehaviour
             // height while accounting for gravity.
         }
     }
-
-
+    
+ 
     public void OnCrouch(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
             controller.height = crouchHeight;
             moveSpeed = crouchSpeed;
-            isCrouching = true;
         }
         else if (context.canceled)
         {
             controller.height = standHeight;
             moveSpeed = originalMoveSpeed;
-            isCrouching = false;
         }
     }
     public void OnPickUp(InputAction.CallbackContext context)
