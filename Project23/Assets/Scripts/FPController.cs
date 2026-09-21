@@ -22,6 +22,9 @@ public class FPController : MonoBehaviour
     public float pickupRange = 3f;
     public Transform holdPoint;
     private PickUpObject heldObject;
+
+    [Header("Pickup Prompt")]
+    public GameObject pickupPrompt;
     public bool IsHoldingObject => heldObject != null;
     [Header("Throw Settings")]
     public float throwForce = 10f;
@@ -47,6 +50,7 @@ public class FPController : MonoBehaviour
     {
         HandleMovement();
         HandleLook();
+        CheckForArtefact();
     }
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -198,7 +202,23 @@ public class FPController : MonoBehaviour
         heldObject.Throw(impulse);
         heldObject = null;
     }
+    private void CheckForArtefact()
+    {
+        Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
 
+        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+        {
+            Artifactcollector artefact = hit.collider.GetComponentInParent<Artifactcollector>();
+
+            if (artefact != null)
+            {
+                pickupPrompt.SetActive(true);
+                return;
+            }
+        }
+
+        pickupPrompt.SetActive(false);
+    }
 
 
 
