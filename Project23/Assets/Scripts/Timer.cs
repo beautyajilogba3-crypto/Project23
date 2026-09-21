@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class Timer : MonoBehaviour
 {
-    public float timeRemaining = 60f;
+    public float timeRemaining = 300f;
     public bool timerrunning = false;
     public TMP_Text timetext;   //this displays how many seconds are left
     public TMP_Text messageText;         //text ui to display when time is up
@@ -51,12 +51,12 @@ public class Timer : MonoBehaviour
 
             {
                 timetext.color = Color.red;
-                timetext.fontSize = 52;
+                timetext.fontSize = 77;
             }
             else
             {
                 timetext.color = Color.darkGreen;
-                timetext.fontSize = 44;
+                timetext.fontSize = 64;
             }
         }
     }
@@ -100,3 +100,4 @@ public class Timer : MonoBehaviour
         CancelInvoke(nameof(GoToMainMenu));
     }
 }
+
