@@ -51,28 +51,19 @@ public class Timer : MonoBehaviour
 
             {
                 timetext.color = Color.red;
-<<<<<<< Updated upstream
-                timetext.fontSize = 85;
-=======
-<<<<<<< HEAD
+
                 timetext.fontSize = 50;
-=======
-                timetext.fontSize = 85;
->>>>>>> 07dbc6e0bdeff4fd42c3f3c3396434b784485947
->>>>>>> Stashed changes
             }
+
             else
             {
                 timetext.color = Color.darkGreen;
-<<<<<<< Updated upstream
-                timetext.fontSize = 85;
-=======
-<<<<<<< HEAD
+
+
                 timetext.fontSize = 43;
-=======
-                timetext.fontSize = 85;
->>>>>>> 07dbc6e0bdeff4fd42c3f3c3396434b784485947
->>>>>>> Stashed changes
+
+
+
             }
         }
     }
