@@ -32,8 +32,8 @@ public class FPController : MonoBehaviour
     private Vector3 velocity;
     // Stores the player's current vertical movement, including gravity.
     private float verticalRotation = 0f;
-    private bool isCrouching = false;
     public bool IsCrouching => isCrouching;
+    private bool isCrouching = false;
 
     // Awake runs once when the GameObject is first loaded.
     private void Awake()
