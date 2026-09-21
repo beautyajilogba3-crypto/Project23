@@ -4,22 +4,25 @@ using UnityEngine.SceneManagement;
 
 public class Timer : MonoBehaviour
 {
-    public float timeRemaining = 60f; 
+    public float timeRemaining = 60f;
     public bool timerrunning = false;
     public TMP_Text timetext;   //this displays how many seconds are left
     public TMP_Text messageText;         //text ui to display when time is up
 
-    public string mainmenu = "Main Menu"; 
+    public string mainmenu = "Main Menu";
     public float delay = 2f;        //transition delay between time up message and reutrn to main emnu
+
+    [Tooltip("Message shown when the timer runs out (different from the guard-catch message).")]
+    public string timeUpMessage = "You did not make it out with the artifact piece.               GAME OVER";
 
     private bool timerEnded = false;
 
     void Start()                        //timer is now running, clear the time-up-message text ui
     {
-        timerrunning = true;      
+        timerrunning = true;
 
         if (messageText != null)
-            messageText.text = ""; 
+            messageText.text = "";
     }
 
     void Update()
@@ -48,12 +51,28 @@ public class Timer : MonoBehaviour
 
             {
                 timetext.color = Color.red;
+<<<<<<< Updated upstream
                 timetext.fontSize = 85;
+=======
+<<<<<<< HEAD
+                timetext.fontSize = 50;
+=======
+                timetext.fontSize = 85;
+>>>>>>> 07dbc6e0bdeff4fd42c3f3c3396434b784485947
+>>>>>>> Stashed changes
             }
             else
             {
                 timetext.color = Color.darkGreen;
+<<<<<<< Updated upstream
                 timetext.fontSize = 85;
+=======
+<<<<<<< HEAD
+                timetext.fontSize = 43;
+=======
+                timetext.fontSize = 85;
+>>>>>>> 07dbc6e0bdeff4fd42c3f3c3396434b784485947
+>>>>>>> Stashed changes
             }
         }
     }
@@ -76,8 +95,9 @@ public class Timer : MonoBehaviour
     void TimeUp()                   //time up fucntion
     {
         if (messageText != null)
-            messageText.text = "You did not make it out with the artifact piece.               GAME OVER";
+            messageText.text = timeUpMessage;
 
+        Debug.Log("Time's up! Now returning to main menu");
 
         Invoke(nameof(GoToMainMenu), delay);       //call delay and then loadscene to go back to main menu
     }
@@ -93,6 +113,6 @@ public class Timer : MonoBehaviour
     public void StopTimer()                    //stop timer if player escaped with obj
     {
         timerrunning = false;
-        CancelInvoke(nameof(GoToMainMenu));    
+        CancelInvoke(nameof(GoToMainMenu));
     }
 }
