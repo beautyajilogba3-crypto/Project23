@@ -10,6 +10,8 @@ public class GuardPatrol : MonoBehaviour
     private Vector3 targetPos;
     private bool movingForward = true;
 
+    public bool patrolling;
+
     void Start()
     {
         startPos = transform.position;
@@ -26,5 +28,10 @@ public class GuardPatrol : MonoBehaviour
         {
             movingForward = !movingForward;
         }
+    }
+
+    public void ResetPatrolOrigin()
+    {
+        
     }
 }
