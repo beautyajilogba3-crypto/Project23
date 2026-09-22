@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+//using UnityEngine.EventSystem;
 using static UnityEngine.UI.Image;
 public class FPController : MonoBehaviour
 {
@@ -43,8 +44,8 @@ public class FPController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         originalMoveSpeed = moveSpeed;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
     private void Update()
     {
