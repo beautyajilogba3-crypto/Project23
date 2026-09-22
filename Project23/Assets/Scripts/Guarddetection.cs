@@ -71,7 +71,7 @@ public class GuardDetection : MonoBehaviour
         if (caught || player == null)
             return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = HorizontalDistance(transform.position, player.position);
         bool playerCrouched = playerController != null && playerController.IsCrouching;
 
         // Once already chasing/investigating, relentlessOnceSpotted ignores
@@ -124,7 +124,7 @@ public class GuardDetection : MonoBehaviour
                     break;
                 }
 
-                float distToLastKnown = Vector3.Distance(transform.position, lastKnownPosition);
+                float distToLastKnown = HorizontalDistance(transform.position, lastKnownPosition);
 
                 if (distToLastKnown > investigateArriveDistance)
                 {
@@ -185,6 +185,18 @@ public class GuardDetection : MonoBehaviour
     {
         target.y = transform.position.y; // keep guard's own height, ignore target's vertical position
         transform.position = Vector3.MoveTowards(transform.position, target, chaseSpeed * Time.deltaTime);
+    }
+
+    // Distance ignoring height, since the guard only ever moves horizontally
+    // (ChaseTowards never changes its own Y). Using a full 3D distance here
+    // would count a permanent height gap that the guard can never close,
+    // causing it to seem "arrived enough" to move but never close enough
+    // to satisfy the check - or the reverse, stuck forever just short of it.
+    private float HorizontalDistance(Vector3 a, Vector3 b)
+    {
+        a.y = 0f;
+        b.y = 0f;
+        return Vector3.Distance(a, b);
     }
 
     private void CatchPlayer()
