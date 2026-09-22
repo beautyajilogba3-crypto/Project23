@@ -11,7 +11,7 @@ public class Timer : MonoBehaviour
 
     public string mainmenu = "Main Menu";
     public float delay = 2f;        //transition delay between time up message and reutrn to main emnu
-
+    public GameObject deathParticle;
     [Tooltip("Message shown when the timer runs out (different from the guard-catch message).")]
     public string timeUpMessage = "You did not make it out with the artifact piece.               GAME OVER";
 
@@ -75,15 +75,17 @@ public class Timer : MonoBehaviour
         else
             Debug.Log(formattedTime);
     }
-
-    void TimeUp()                   //time up fucntion
+    void TimeUp()
     {
         if (messageText != null)
             messageText.text = timeUpMessage;
 
+        if (deathParticle != null)
+            deathParticle.SetActive(true);
+
         Debug.Log("Time's up! Now returning to main menu");
 
-        Invoke(nameof(GoToMainMenu), delay);       //call delay and then loadscene to go back to main menu
+        Invoke(nameof(GoToMainMenu), delay);
     }
 
     void GoToMainMenu()
