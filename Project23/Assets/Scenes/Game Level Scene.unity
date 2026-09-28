@@ -37654,6 +37654,7 @@ MonoBehaviour:
   messageText: {fileID: 780200328}
   mainmenu: Main Menu
   delay: 2
+  deathParticle: {fileID: 0}
   timeUpMessage: You did not make it out with the artifact piece.               GAME
     OVER
 --- !u!4 &922642025
