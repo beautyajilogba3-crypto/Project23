@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(GuardPatrol))]
 public class GuardDetection : MonoBehaviour
 {
-    private enum GuardState { Patrolling, Chasing, Investigating }
+    private enum GuardState { Patrolling, Chasing, Investigating };
 
     [Header("References")]
     [Tooltip("Drag the player object here.")]
