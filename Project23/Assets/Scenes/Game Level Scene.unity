@@ -5192,7 +5192,7 @@ MonoBehaviour:
   timeBtwnChars: 0
   typewriterAudio: {fileID: 182246401}
   typewriterSound: {fileID: 8300000, guid: 638ccd7a4585f284eaf8e93751c7e803, type: 3}
-  narrationPanel: {fileID: 0}
+  narrationPanel: {fileID: 545320560}
 --- !u!114 &182246398
 MonoBehaviour:
   m_ObjectHideFlags: 0
