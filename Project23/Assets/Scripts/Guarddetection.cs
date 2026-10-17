@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -55,15 +56,25 @@ public class GuardDetection : MonoBehaviour
     public Timer timer;
 
     private GuardPatrol patrol;
+    private NavMeshAgent agent;          // optional - if present, it drives all movement
+    private float patrolAgentSpeed;      // agent speed to restore when returning to patrol
+
     private GuardState state = GuardState.Patrolling;
     private bool caught = false;
 
     private Vector3 lastKnownPosition;
     private float investigateTimer = 0f;
+    private bool investigateArrived = false;
 
     void Awake()
     {
         patrol = GetComponent<GuardPatrol>();
+        agent = GetComponent<NavMeshAgent>();
+
+        if (agent != null)
+            patrolAgentSpeed = agent.speed;
+        else
+            Debug.LogWarning($"{name}: no NavMeshAgent found - chase/investigate will move in straight lines THROUGH WALLS.", this);
     }
 
     void Update()
@@ -102,7 +113,7 @@ public class GuardDetection : MonoBehaviour
                 if (playerVisible)
                 {
                     lastKnownPosition = player.position;
-                    ChaseTowards(player.position);
+                    MoveTowards(player.position);
 
                     if (distance <= catchRange)
                     {
@@ -110,7 +121,7 @@ public class GuardDetection : MonoBehaviour
                         return;
                     }
                 }
-                else if (playerCrouched || distance > detectionRange * loseRangeMultiplier)
+                else
                 {
                     EnterInvestigate();
                 }
@@ -124,16 +135,21 @@ public class GuardDetection : MonoBehaviour
                     break;
                 }
 
-                float distToLastKnown = HorizontalDistance(transform.position, lastKnownPosition);
-
-                if (distToLastKnown > investigateArriveDistance)
+                if (!investigateArrived)
                 {
-                    // Still walking to where the player was last seen.
-                    ChaseTowards(lastKnownPosition);
+                    if (HasArrivedAtLastKnown())
+                    {
+                        investigateArrived = true;
+                        StopMoving();
+                    }
+                    else
+                    {
+                        MoveTowards(lastKnownPosition);
+                    }
                 }
                 else
                 {
-                    // Arrived - stand and "look around" for investigateWaitTime before giving up.
+                    // Arrived - stand and "look around" before giving up.
                     investigateTimer -= Time.deltaTime;
                     if (investigateTimer <= 0f)
                     {
@@ -143,6 +159,8 @@ public class GuardDetection : MonoBehaviour
                 break;
         }
     }
+
+    // ---------- State transitions ----------
 
     private void EnterChase()
     {
@@ -156,42 +174,74 @@ public class GuardDetection : MonoBehaviour
     {
         state = GuardState.Investigating;
         investigateTimer = investigateWaitTime;
+        investigateArrived = false;
         // lastKnownPosition already holds the last spot the player was seen.
     }
 
     private void EnterPatrol()
     {
         state = GuardState.Patrolling;
+
+        // Hand the agent back to the patrol script cleanly.
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.speed = patrolAgentSpeed;
+            agent.ResetPath();
+            agent.isStopped = false;
+        }
+
         patrol.patrolling = true;
         patrol.ResetPatrolOrigin();
     }
 
-    private void ShowSpottedMessage()
+    // ---------- Movement ----------
+
+    private void MoveTowards(Vector3 target)
     {
-        if (messageText == null)
-            return;
+        if (agent != null && agent.isOnNavMesh)
+        {
+            // Snap the target onto the NavMesh so an off-mesh player position
+            // (e.g. pressed against a wall) still gives a reachable destination.
+            if (NavMesh.SamplePosition(target, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+                target = hit.position;
 
-        // Reuses the same MessagePump helper Artifactcollector uses, so the
-        // message clears itself even though this GuardDetection component
-        // keeps running afterward (unlike the artefact, which deactivates).
-        MessagePump pump = messageText.GetComponent<MessagePump>();
-        if (pump == null)
-            pump = messageText.gameObject.AddComponent<MessagePump>();
-
-        pump.ShowThenClear(messageText, spottedMessage, spottedMessageDuration);
+            agent.isStopped = false;
+            agent.speed = chaseSpeed;
+            agent.SetDestination(target);
+        }
+        else
+        {
+            // Fallback for guards without a NavMeshAgent (no wall avoidance).
+            target.y = transform.position.y;
+            transform.position = Vector3.MoveTowards(transform.position, target, chaseSpeed * Time.deltaTime);
+        }
     }
 
-    private void ChaseTowards(Vector3 target)
+    private void StopMoving()
     {
-        target.y = transform.position.y; // keep guard's own height, ignore target's vertical position
-        transform.position = Vector3.MoveTowards(transform.position, target, chaseSpeed * Time.deltaTime);
+        if (agent != null && agent.isOnNavMesh)
+        {
+            agent.ResetPath();
+            agent.isStopped = true;
+        }
     }
 
-    // Distance ignoring height, since the guard only ever moves horizontally
-    // (ChaseTowards never changes its own Y). Using a full 3D distance here
-    // would count a permanent height gap that the guard can never close,
-    // causing it to seem "arrived enough" to move but never close enough
-    // to satisfy the check - or the reverse, stuck forever just short of it.
+    private bool HasArrivedAtLastKnown()
+    {
+        if (HorizontalDistance(transform.position, lastKnownPosition) <= investigateArriveDistance)
+            return true;
+
+        // With a NavMeshAgent the guard may stop short of the raw position
+        // (walls, snapped destination), so also trust the agent's own path.
+        if (agent != null && agent.isOnNavMesh && agent.hasPath && !agent.pathPending
+            && agent.remainingDistance <= Mathf.Max(investigateArriveDistance, agent.stoppingDistance))
+            return true;
+
+        return false;
+    }
+
+    // Distance ignoring height, so pivot-height differences between guard
+    // and player never affect detection, catch, or arrival checks.
     private float HorizontalDistance(Vector3 a, Vector3 b)
     {
         a.y = 0f;
@@ -199,9 +249,24 @@ public class GuardDetection : MonoBehaviour
         return Vector3.Distance(a, b);
     }
 
+    // ---------- Messages / game over ----------
+
+    private void ShowSpottedMessage()
+    {
+        if (messageText == null)
+            return;
+
+        MessagePump pump = messageText.GetComponent<MessagePump>();
+        if (pump == null)
+            pump = messageText.gameObject.AddComponent<MessagePump>();
+
+        pump.ShowThenClear(messageText, spottedMessage, spottedMessageDuration);
+    }
+
     private void CatchPlayer()
     {
         caught = true;
+        StopMoving();
 
         if (timer != null)
             timer.StopTimer();
@@ -222,7 +287,6 @@ public class GuardDetection : MonoBehaviour
         Cursor.visible = true;
     }
 
-    // Optional: visualize detection/catch ranges in the Scene view while designing.
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
