@@ -7,6 +7,10 @@ public class GuardPatrol : MonoBehaviour
     public float walkDistance = 5f;    // how far it walks before turning around
     public float walkSpeed = 2f;       // how fast it moves
 
+    [Tooltip("How fast the guard turns to face its direction of travel (degrees/second). " +
+             "Raise this if guards slide sideways while turning around.")]
+    public float turnSpeed = 360f;
+
     [Tooltip("How close the guard needs to get to a patrol point before turning around.")]
     public float arriveDistance = 0.5f;
 
@@ -26,6 +30,14 @@ public class GuardPatrol : MonoBehaviour
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+
+        if (agent != null)
+        {
+            // The agent turns the guard to face where it is walking, so the guard
+            // (and any model on it) always walks forwards.
+            agent.updateRotation = true;
+            agent.angularSpeed = turnSpeed;
+        }
     }
 
     void Start()
@@ -92,6 +104,7 @@ public class GuardPatrol : MonoBehaviour
         else
         {
             // Fallback for guards without a NavMeshAgent (straight line, no wall avoidance).
+            FaceDirection(destination - transform.position);
             transform.position = Vector3.MoveTowards(transform.position, destination, walkSpeed * Time.deltaTime);
 
             if (Vector3.Distance(transform.position, destination) < 0.05f)
@@ -104,6 +117,18 @@ public class GuardPatrol : MonoBehaviour
     public void ResetPatrolOrigin()
     {
         destinationSet = false;
+    }
+
+    // Smoothly turns the guard (flat, no tilting) toward a direction.
+    // Only needed for the no-agent fallback - an agent rotates itself.
+    public void FaceDirection(Vector3 direction)
+    {
+        direction.y = 0f;
+        if (direction.sqrMagnitude < 0.0001f)
+            return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction.normalized, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
     }
 
     private Vector3 Snap(Vector3 point)
