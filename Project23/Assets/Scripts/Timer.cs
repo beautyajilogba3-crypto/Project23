@@ -55,7 +55,7 @@ public class Timer : MonoBehaviour
             }
             else
             {
-                timetext.color = Color.darkGreen;
+                timetext.color = Color.lightGreen;
                 timetext.fontSize = 64;
             }
         }
