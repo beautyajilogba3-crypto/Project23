@@ -19258,6 +19258,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkBackForth
   walkDistance: 14
   walkSpeed: 2
+  turnSpeed: 360
   arriveDistance: 0.5
   patrolling: 1
 --- !u!114 &502432616
@@ -19274,13 +19275,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuardDetection
   player: {fileID: 1589363656}
   playerController: {fileID: 1589363651}
-  detectionRange: 4
+  detectionRange: 8
+  detectionAngle: 90
+  requireLineOfSight: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  eyeHeight: 1.5
+  playerTargetHeight: 1
   loseRangeMultiplier: 1.5
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 2
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
+  detectionLight: {fileID: 0}
+  lightHeight: 1.5
+  lightPitch: 15
+  lightForwardOffset: 0.6
+  lightCastsShadows: 1
+  patrolLightColor: {r: 1, g: 0, b: 0, a: 1}
+  investigateLightColor: {r: 1, g: 0.65, b: 0.1, a: 1}
+  chaseLightColor: {r: 0.57861626, g: 0.041849554, b: 0.041849554, a: 1}
+  patrolLightIntensity: 5
+  investigateLightIntensity: 6
+  chaseLightIntensity: 10
+  lightTransitionSpeed: 6
+  useSpotLight: 1
+  showVisionCone: 1
+  visionConeMaterial: {fileID: 0}
+  coneOpacity: 0.55
+  chaseConeOpacity: 0.6
+  coneHeight: 1
+  coneRayCount: 40
+  coneFloorHeight: 2
+  coneWallCheckHeight: 1
+  detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
+  detectedVolume: 1
+  detectedSoundSpatialBlend: 0
+  detectedSoundCooldown: 0.5
   messageText: {fileID: 780200328}
   caughtMessage: You've been caught!
   mainMenuScene: Main Menu
@@ -26647,6 +26680,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkBackForth
   walkDistance: 14
   walkSpeed: 2
+  turnSpeed: 360
   arriveDistance: 0.5
   patrolling: 1
 --- !u!136 &636529565
@@ -26686,13 +26720,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuardDetection
   player: {fileID: 1589363656}
   playerController: {fileID: 1589363651}
-  detectionRange: 4
+  detectionRange: 8
+  detectionAngle: 90
+  requireLineOfSight: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  eyeHeight: 1.5
+  playerTargetHeight: 1
   loseRangeMultiplier: 1.5
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 2
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
+  detectionLight: {fileID: 0}
+  lightHeight: 1.5
+  lightPitch: 15
+  lightForwardOffset: 0.6
+  lightCastsShadows: 1
+  patrolLightColor: {r: 0.9685534, g: 0.06085152, b: 0, a: 1}
+  investigateLightColor: {r: 1, g: 0.65, b: 0.1, a: 1}
+  chaseLightColor: {r: 0.61006284, g: 0.0057552145, b: 0.0057552145, a: 1}
+  patrolLightIntensity: 5
+  investigateLightIntensity: 6
+  chaseLightIntensity: 10
+  lightTransitionSpeed: 6
+  useSpotLight: 1
+  showVisionCone: 1
+  visionConeMaterial: {fileID: 0}
+  coneOpacity: 0.55
+  chaseConeOpacity: 0.7
+  coneHeight: 1
+  coneRayCount: 40
+  coneFloorHeight: 2
+  coneWallCheckHeight: 1
+  detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
+  detectedVolume: 1
+  detectedSoundSpatialBlend: 0
+  detectedSoundCooldown: 0.5
   messageText: {fileID: 780200328}
   caughtMessage: You've been caught!
   mainMenuScene: Main Menu
@@ -62253,6 +62319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkBackForth
   walkDistance: 14
   walkSpeed: 2
+  turnSpeed: 360
   arriveDistance: 0.5
   patrolling: 1
 --- !u!136 &1450218463
@@ -62292,13 +62359,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuardDetection
   player: {fileID: 1589363656}
   playerController: {fileID: 1589363651}
-  detectionRange: 4
+  detectionRange: 8
+  detectionAngle: 90
+  requireLineOfSight: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  eyeHeight: 4
+  playerTargetHeight: 1
   loseRangeMultiplier: 1.5
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 2
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
+  detectionLight: {fileID: 0}
+  lightHeight: 1.5
+  lightPitch: 15
+  lightForwardOffset: 0.6
+  lightCastsShadows: 1
+  patrolLightColor: {r: 1, g: 0.1275852, b: 0.028301716, a: 1}
+  investigateLightColor: {r: 1, g: 0.65, b: 0.1, a: 1}
+  chaseLightColor: {r: 0.66666657, g: 0, b: 0, a: 1}
+  patrolLightIntensity: 5
+  investigateLightIntensity: 6
+  chaseLightIntensity: 10
+  lightTransitionSpeed: 6
+  useSpotLight: 1
+  showVisionCone: 1
+  visionConeMaterial: {fileID: 0}
+  coneOpacity: 0.55
+  chaseConeOpacity: 0.7
+  coneHeight: 1
+  coneRayCount: 40
+  coneFloorHeight: 2
+  coneWallCheckHeight: 1
+  detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
+  detectedVolume: 1
+  detectedSoundSpatialBlend: 0
+  detectedSoundCooldown: 0.5
   messageText: {fileID: 780200328}
   caughtMessage: You've been caught!
   mainMenuScene: Main Menu
@@ -80540,6 +80639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkBackForth
   walkDistance: 14
   walkSpeed: 2
+  turnSpeed: 360
   arriveDistance: 0.5
   patrolling: 1
 --- !u!136 &1929660689
@@ -80579,13 +80679,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuardDetection
   player: {fileID: 1589363656}
   playerController: {fileID: 1589363651}
-  detectionRange: 4
+  detectionRange: 8
+  detectionAngle: 90
+  requireLineOfSight: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  eyeHeight: 1.5
+  playerTargetHeight: 1
   loseRangeMultiplier: 1.5
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 2
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
+  detectionLight: {fileID: 0}
+  lightHeight: 1.5
+  lightPitch: 15
+  lightForwardOffset: 0.6
+  lightCastsShadows: 1
+  patrolLightColor: {r: 1, g: 0.3, b: 0.25, a: 1}
+  investigateLightColor: {r: 1, g: 0.65, b: 0.1, a: 1}
+  chaseLightColor: {r: 1, g: 0, b: 0, a: 1}
+  patrolLightIntensity: 5
+  investigateLightIntensity: 6
+  chaseLightIntensity: 10
+  lightTransitionSpeed: 6
+  useSpotLight: 1
+  showVisionCone: 1
+  visionConeMaterial: {fileID: 0}
+  coneOpacity: 0.55
+  chaseConeOpacity: 0.7
+  coneHeight: 1
+  coneRayCount: 40
+  coneFloorHeight: 2
+  coneWallCheckHeight: 1
+  detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
+  detectedVolume: 1
+  detectedSoundSpatialBlend: 0
+  detectedSoundCooldown: 0.5
   messageText: {fileID: 780200328}
   caughtMessage: You've been caught!
   mainMenuScene: Main Menu
@@ -83973,6 +84105,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WalkBackForth
   walkDistance: 14
   walkSpeed: 2
+  turnSpeed: 360
   arriveDistance: 0.5
   patrolling: 1
 --- !u!136 &2075354826
@@ -84012,13 +84145,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GuardDetection
   player: {fileID: 1589363656}
   playerController: {fileID: 1589363651}
-  detectionRange: 4
+  detectionRange: 8
+  detectionAngle: 90
+  requireLineOfSight: 1
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  eyeHeight: 1.5
+  playerTargetHeight: 1
   loseRangeMultiplier: 1.5
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 2
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
+  detectionLight: {fileID: 0}
+  lightHeight: 1.5
+  lightPitch: 15
+  lightForwardOffset: 0.6
+  lightCastsShadows: 1
+  patrolLightColor: {r: 1, g: 0, b: 0, a: 1}
+  investigateLightColor: {r: 1, g: 0.65, b: 0.1, a: 1}
+  chaseLightColor: {r: 0.59748423, g: 0, b: 0, a: 1}
+  patrolLightIntensity: 5
+  investigateLightIntensity: 6
+  chaseLightIntensity: 10
+  lightTransitionSpeed: 6
+  useSpotLight: 1
+  showVisionCone: 1
+  visionConeMaterial: {fileID: 0}
+  coneOpacity: 0.55
+  chaseConeOpacity: 0.7
+  coneHeight: 1
+  coneRayCount: 40
+  coneFloorHeight: 2
+  coneWallCheckHeight: 1
+  detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
+  detectedVolume: 1
+  detectedSoundSpatialBlend: 0
+  detectedSoundCooldown: 0.5
   messageText: {fileID: 780200328}
   caughtMessage: You've been caught!
   mainMenuScene: Main Menu

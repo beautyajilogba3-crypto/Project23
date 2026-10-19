@@ -17,16 +17,16 @@ public class GuardDetection : MonoBehaviour
 
     [Header("Detection Cone (in front of the guard)")]
     [Tooltip("How far in front of the guard it can spot the player.")]
-    public float detectionRange = 8f;
+    public float detectionRange = 16f;
 
     [Tooltip("Full width of the vision cone in degrees. 90 = 45 degrees either side of where the guard faces.")]
     [Range(10f, 170f)]
     public float detectionAngle = 90f;
 
-    [Tooltip("If true, walls and obstacles block the guard's vision (matches the light being blocked by walls).")]
+    [Tooltip("If true, walls and obstacles block the guard's vision.")]
     public bool requireLineOfSight = true;
 
-    [Tooltip("Which layers block vision. Set this to your Walls layer so artefacts or other guards don't block sight.")]
+    [Tooltip("Which layers block vision.")]
     public LayerMask obstacleMask = ~0;
 
     [Tooltip("Height of the guard's eyes, used for the line-of-sight check.")]
@@ -36,53 +36,56 @@ public class GuardDetection : MonoBehaviour
     public float playerTargetHeight = 1.0f;
 
     [Header("Chase Awareness")]
-    [Tooltip("Once chasing, guard gives up if the player gets this much further away than detectionRange. " +
-             "Ignored if Relentless Once Spotted is true.")]
     public float loseRangeMultiplier = 1.5f;
-
-    [Tooltip("If true, once chasing, distance no longer breaks the chase - only crouching does.")]
     public bool relentlessOnceSpotted = false;
-
-    [Tooltip("Guard catches the player within this range.")]
     public float catchRange = 1.5f;
 
     [Header("Chase Settings")]
     public float chaseSpeed = 4f;
 
     [Header("Investigate Settings")]
-    [Tooltip("After losing the player, the guard walks to their last known position, then waits here before giving up.")]
     public float investigateWaitTime = 3f;
-
-    [Tooltip("How close the guard needs to get to the last known position to start the wait timer.")]
     public float investigateArriveDistance = 0.5f;
 
-    [Header("Detection Light (shows the player where the guard can see)")]
-    [Tooltip("Optional. Leave empty and a spot light is created automatically as a child of the guard.")]
+    [Header("Detection Light")]
     public Light detectionLight;
-
-    [Tooltip("Height of the light above the guard's feet (only used for the auto-created light).")]
     public float lightHeight = 1.5f;
-
-    [Tooltip("Downward tilt of the light in degrees, so the beam lands on the floor (only used for the auto-created light).")]
     public float lightPitch = 15f;
-
-    [Tooltip("How far in front of the guard's centre the light sits. Must be bigger than the guard's body radius, " +
-             "otherwise the guard's own body blocks the light (only used for the auto-created light).")]
     public float lightForwardOffset = 0.6f;
-
-    [Tooltip("If true, walls block the light. Turn off to test whether shadows are the reason the light isn't showing.")]
     public bool lightCastsShadows = true;
 
-    public Color patrolLightColor = new Color(1f, 0.3f, 0.25f);          // reddish: patrolling
-    public Color investigateLightColor = new Color(1f, 0.65f, 0.1f);     // amber: searching
-    public Color chaseLightColor = new Color(1f, 0f, 0f);                // pure red: spotted
+    public Color patrolLightColor = new Color(1f, 0.3f, 0.25f);
+    public Color investigateLightColor = new Color(1f, 0.65f, 0.1f);
+    public Color chaseLightColor = new Color(1f, 0f, 0f);
 
     public float patrolLightIntensity = 5f;
     public float investigateLightIntensity = 6f;
     public float chaseLightIntensity = 10f;
-
-    [Tooltip("How quickly the light fades between colours.")]
     public float lightTransitionSpeed = 6f;
+    public bool useSpotLight = true;
+
+    [Header("Vision Cone Visual (visible beam on the floor)")]
+    public bool showVisionCone = true;
+    public Material visionConeMaterial;
+
+    [Range(0f, 1f)]
+    public float coneOpacity = 0.35f;
+
+    [Range(0f, 1f)]
+    public float chaseConeOpacity = 0.6f;
+
+    [Tooltip("Vertical height/thickness of the 3D cone volume.")]
+    public float coneHeight = 2f; // <-- Adjustable right here in the Inspector!
+
+    public int coneRayCount = 40;
+    public float coneFloorHeight = 0.05f;
+    public float coneWallCheckHeight = 1f;
+
+    [Header("Detection Sound")]
+    public AudioClip detectedSound;
+    [Range(0f, 1f)] public float detectedVolume = 1f;
+    [Range(0f, 1f)] public float detectedSoundSpatialBlend = 0f;
+    public float detectedSoundCooldown = 0.5f;
 
     [Header("Catch / Game Over")]
     public TMP_Text messageText;
@@ -91,18 +94,13 @@ public class GuardDetection : MonoBehaviour
     public float catchDelay = 2f;
 
     [Header("Spotted Message")]
-    [Tooltip("Message shown briefly the moment the guard starts chasing.")]
     public string spottedMessage = "You've been seen!";
-
-    [Tooltip("How long the spotted message stays on screen before clearing.")]
     public float spottedMessageDuration = 1.5f;
-
-    [Tooltip("Drag the object holding your Timer script here, so it stops counting once the player is caught.")]
     public Timer timer;
 
     private GuardPatrol patrol;
-    private NavMeshAgent agent;          // optional - if present, it drives all movement
-    private float patrolAgentSpeed;      // agent speed to restore when returning to patrol
+    private NavMeshAgent agent;
+    private float patrolAgentSpeed;
 
     private GuardState state = GuardState.Patrolling;
     private bool caught = false;
@@ -111,6 +109,11 @@ public class GuardDetection : MonoBehaviour
     private float investigateTimer = 0f;
     private bool investigateArrived = false;
 
+    private VisionConeVisual visionCone;
+    private float currentConeOpacity;
+    private AudioSource audioSource;
+    private float lastDetectedSoundTime = -999f;
+
     void Awake()
     {
         patrol = GetComponent<GuardPatrol>();
@@ -118,10 +121,10 @@ public class GuardDetection : MonoBehaviour
 
         if (agent != null)
             patrolAgentSpeed = agent.speed;
-        else
-            Debug.LogWarning($"{name}: no NavMeshAgent found - chase/investigate will move in straight lines THROUGH WALLS.", this);
 
         SetupLight();
+        SetupVisionCone();
+        SetupAudio();
     }
 
     void Update()
@@ -132,11 +135,6 @@ public class GuardDetection : MonoBehaviour
         float distance = HorizontalDistance(transform.position, player.position);
         bool playerCrouched = playerController != null && playerController.IsCrouching;
 
-        // How the guard can see the player depends on its state:
-        // - Patrolling / Investigating: only inside the lit vision cone (and not behind walls),
-        //   so "if the light isn't on you, you're not seen".
-        // - Chasing: the guard already knows where you are, so it keeps tracking you in a
-        //   full circle (or without any distance limit if relentlessOnceSpotted is on).
         bool playerVisible;
         if (state == GuardState.Chasing)
         {
@@ -177,7 +175,6 @@ public class GuardDetection : MonoBehaviour
             case GuardState.Investigating:
                 if (playerVisible)
                 {
-                    // Spotted again mid-search - resume the chase.
                     EnterChase();
                     break;
                 }
@@ -196,7 +193,6 @@ public class GuardDetection : MonoBehaviour
                 }
                 else
                 {
-                    // Arrived - stand and "look around" before giving up.
                     investigateTimer -= Time.deltaTime;
                     if (investigateTimer <= 0f)
                     {
@@ -207,11 +203,9 @@ public class GuardDetection : MonoBehaviour
         }
 
         UpdateDetectionLight();
+        UpdateVisionCone();
     }
 
-    // ---------- Vision ----------
-
-    // Is the player within range AND inside the cone in front of the guard?
     private bool IsInDetectionCone(float horizontalDistance)
     {
         if (horizontalDistance > detectionRange)
@@ -220,7 +214,6 @@ public class GuardDetection : MonoBehaviour
         Vector3 toPlayer = player.position - transform.position;
         toPlayer.y = 0f;
 
-        // Standing right on top of the guard - treat as inside the cone.
         if (toPlayer.sqrMagnitude < 0.0001f)
             return true;
 
@@ -231,7 +224,6 @@ public class GuardDetection : MonoBehaviour
         return angleToPlayer <= detectionAngle * 0.5f;
     }
 
-    // Is there a wall or obstacle between the guard's eyes and the player?
     private bool HasLineOfSight()
     {
         if (!requireLineOfSight)
@@ -248,24 +240,21 @@ public class GuardDetection : MonoBehaviour
         if (Physics.Raycast(origin, direction / length, out RaycastHit hit, length, obstacleMask, QueryTriggerInteraction.Ignore))
         {
             Transform hitTransform = hit.transform;
-
-            // Hitting the player (or ourselves) first means nothing is in the way.
             if (hitTransform == player || hitTransform.IsChildOf(player) || hitTransform.IsChildOf(transform))
                 return true;
 
-            return false; // a wall/obstacle is blocking the view
+            return false;
         }
 
         return true;
     }
-
-    // ---------- State transitions ----------
 
     private void EnterChase()
     {
         state = GuardState.Chasing;
         patrol.patrolling = false;
         lastKnownPosition = player.position;
+        PlayDetectedSound();
         ShowSpottedMessage();
     }
 
@@ -274,14 +263,12 @@ public class GuardDetection : MonoBehaviour
         state = GuardState.Investigating;
         investigateTimer = investigateWaitTime;
         investigateArrived = false;
-        // lastKnownPosition already holds the last spot the player was seen.
     }
 
     private void EnterPatrol()
     {
         state = GuardState.Patrolling;
 
-        // Hand the agent back to the patrol script cleanly.
         if (agent != null && agent.isOnNavMesh)
         {
             agent.speed = patrolAgentSpeed;
@@ -293,27 +280,20 @@ public class GuardDetection : MonoBehaviour
         patrol.ResetPatrolOrigin();
     }
 
-    // ---------- Movement ----------
-
     private void MoveTowards(Vector3 target)
     {
         if (agent != null && agent.isOnNavMesh)
         {
-            // Snap the target onto the NavMesh so an off-mesh player position
-            // (e.g. pressed against a wall) still gives a reachable destination.
             if (NavMesh.SamplePosition(target, out NavMeshHit hit, 2f, NavMesh.AllAreas))
                 target = hit.position;
 
             agent.isStopped = false;
             agent.speed = chaseSpeed;
             agent.SetDestination(target);
-            // The agent rotates the guard to face its direction of travel.
         }
         else
         {
-            // Fallback for guards without a NavMeshAgent (no wall avoidance).
             patrol.FaceDirection(target - transform.position);
-
             target.y = transform.position.y;
             transform.position = Vector3.MoveTowards(transform.position, target, chaseSpeed * Time.deltaTime);
         }
@@ -333,8 +313,6 @@ public class GuardDetection : MonoBehaviour
         if (HorizontalDistance(transform.position, lastKnownPosition) <= investigateArriveDistance)
             return true;
 
-        // With a NavMeshAgent the guard may stop short of the raw position
-        // (walls, snapped destination), so also trust the agent's own path.
         if (agent != null && agent.isOnNavMesh && agent.hasPath && !agent.pathPending
             && agent.remainingDistance <= Mathf.Max(investigateArriveDistance, agent.stoppingDistance))
             return true;
@@ -342,16 +320,12 @@ public class GuardDetection : MonoBehaviour
         return false;
     }
 
-    // Distance ignoring height, so pivot-height differences between guard
-    // and player never affect detection, catch, or arrival checks.
     private float HorizontalDistance(Vector3 a, Vector3 b)
     {
         a.y = 0f;
         b.y = 0f;
         return Vector3.Distance(a, b);
     }
-
-    // ---------- Detection light ----------
 
     private void SetupLight()
     {
@@ -363,12 +337,13 @@ public class GuardDetection : MonoBehaviour
             lightObject.transform.localRotation = Quaternion.Euler(lightPitch, 0f, 0f);
 
             detectionLight = lightObject.AddComponent<Light>();
-            detectionLight.shadows = lightCastsShadows ? LightShadows.Soft : LightShadows.None; // walls block the light, matching line of sight
+            detectionLight.shadows = lightCastsShadows ? LightShadows.Soft : LightShadows.None;
         }
 
         detectionLight.type = LightType.Spot;
         detectionLight.color = patrolLightColor;
         detectionLight.intensity = patrolLightIntensity;
+        detectionLight.enabled = useSpotLight;
     }
 
     private void UpdateDetectionLight()
@@ -376,7 +351,6 @@ public class GuardDetection : MonoBehaviour
         if (detectionLight == null)
             return;
 
-        // Keep the light's size matched to the actual detection values.
         detectionLight.range = detectionRange;
         detectionLight.spotAngle = detectionAngle;
 
@@ -404,7 +378,74 @@ public class GuardDetection : MonoBehaviour
         detectionLight.intensity = Mathf.Lerp(detectionLight.intensity, targetIntensity, t);
     }
 
-    // ---------- Messages / game over ----------
+    private void SetupVisionCone()
+    {
+        if (!showVisionCone)
+            return;
+
+        GameObject coneObj = new GameObject("VisionConeVisual");
+        coneObj.transform.SetParent(transform, false);
+        visionCone = coneObj.AddComponent<VisionConeVisual>();
+
+        Material mat = visionConeMaterial;
+        if (mat == null)
+        {
+            Shader shader = Shader.Find("Sprites/Default");
+            if (shader == null) shader = Shader.Find("UI/Default");
+            mat = new Material(shader);
+        }
+
+        visionCone.Initialize(mat, coneRayCount, coneFloorHeight, coneHeight, coneWallCheckHeight);
+        currentConeOpacity = coneOpacity;
+    }
+
+    private void UpdateVisionCone()
+    {
+        if (visionCone == null)
+            return;
+
+        visionCone.gameObject.SetActive(showVisionCone);
+        if (!showVisionCone)
+            return;
+
+        float targetOpacity = (state == GuardState.Chasing) ? chaseConeOpacity : coneOpacity;
+        currentConeOpacity = Mathf.MoveTowards(currentConeOpacity, targetOpacity, Time.deltaTime * 3f);
+
+        Color activeColor = patrolLightColor;
+        if (state == GuardState.Chasing) activeColor = chaseLightColor;
+        else if (state == GuardState.Investigating) activeColor = investigateLightColor;
+
+        visionCone.Configure(detectionRange, detectionAngle, activeColor, currentConeOpacity, coneHeight, obstacleMask, player);
+    }
+
+    private void SetupAudio()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null && detectedSound != null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        if (audioSource != null)
+        {
+            audioSource.spatialBlend = detectedSoundSpatialBlend;
+            audioSource.playOnAwake = false;
+        }
+    }
+
+    private void PlayDetectedSound()
+    {
+        if (detectedSound == null || audioSource == null)
+            return;
+
+        if (Time.time - lastDetectedSoundTime < detectedSoundCooldown)
+            return;
+
+        audioSource.volume = detectedVolume;
+        audioSource.spatialBlend = detectedSoundSpatialBlend;
+        audioSource.PlayOneShot(detectedSound);
+        lastDetectedSoundTime = Time.time;
+    }
 
     private void ShowSpottedMessage()
     {
@@ -442,7 +483,6 @@ public class GuardDetection : MonoBehaviour
         Cursor.visible = true;
     }
 
-    // Shows the vision cone (yellow) and catch range (red) in the Scene view when the guard is selected.
     void OnDrawGizmosSelected()
     {
         Vector3 origin = transform.position;
@@ -460,7 +500,6 @@ public class GuardDetection : MonoBehaviour
         Gizmos.DrawLine(origin, origin + leftEdge * detectionRange);
         Gizmos.DrawLine(origin, origin + rightEdge * detectionRange);
 
-        // Arc across the front of the cone.
         const int segments = 24;
         Vector3 previous = origin + leftEdge * detectionRange;
         for (int i = 1; i <= segments; i++)
