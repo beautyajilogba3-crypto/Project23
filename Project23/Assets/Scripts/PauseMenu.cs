@@ -46,9 +46,15 @@ public class PauseMenu : MonoBehaviour
     public void Restart()
     {
         Time.timeScale = 1f;
+
+        pauseMenu.SetActive(false);
+        hud.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
     public void Home()
     {
         Time.timeScale = 1f;
