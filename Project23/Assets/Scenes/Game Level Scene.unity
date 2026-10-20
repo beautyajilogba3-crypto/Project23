@@ -22863,6 +22863,7 @@ GameObject:
   - component: {fileID: 502432611}
   - component: {fileID: 502432615}
   - component: {fileID: 502432617}
+  - component: {fileID: 502432618}
   m_Layer: 0
   m_Name: Patrol Security Guard
   m_TagString: Untagged
@@ -23067,6 +23068,23 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &502432618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502432610}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
+  idleClip: {fileID: 4481803272877397582, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+  walkClip: {fileID: -9081999900557726759, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+  runClip: {fileID: 0}
+  blendSmoothing: 8
+  debugLog: 1
 --- !u!1 &506187823
 GameObject:
   m_ObjectHideFlags: 0
@@ -64140,6 +64158,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mikhar_Sookdeo_Group23_A3_EC
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -73817,6 +73839,7 @@ GameObject:
   - component: {fileID: 1450218467}
   - component: {fileID: 1450218466}
   - component: {fileID: 1450218465}
+  - component: {fileID: 1450218469}
   - component: {fileID: 1450218464}
   - component: {fileID: 1450218463}
   - component: {fileID: 1450218462}
@@ -74025,6 +74048,23 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1450218469
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450218461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
+  idleClip: {fileID: 4481803272877397582, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+  walkClip: {fileID: 3741830241649414575, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+  runClip: {fileID: 0}
+  blendSmoothing: 8
+  debugLog: 1
 --- !u!1 &1452873383
 GameObject:
   m_ObjectHideFlags: 0
@@ -96623,7 +96663,7 @@ Transform:
   m_GameObject: {fileID: 1929660687}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.6, y: 0.59, z: -37.4}
+  m_LocalPosition: {x: 5.6, y: 0.59, z: -36.84}
   m_LocalScale: {x: 1, y: 1.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99526,6 +99566,18 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
       propertyPath: m_Name
       value: Mikhar_Sookdeo_Group23_A3_EC
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+      propertyPath: m_CullingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
