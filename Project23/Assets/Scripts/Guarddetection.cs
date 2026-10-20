@@ -1,7 +1,7 @@
+
 using UnityEngine;
 using UnityEngine.AI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(GuardPatrol))]
 public class GuardDetection : MonoBehaviour
@@ -75,7 +75,7 @@ public class GuardDetection : MonoBehaviour
     public float chaseConeOpacity = 0.6f;
 
     [Tooltip("Vertical height/thickness of the 3D cone volume.")]
-    public float coneHeight = 2f; // <-- Adjustable right here in the Inspector!
+    public float coneHeight = 2f;
 
     public int coneRayCount = 40;
     public float coneFloorHeight = 0.05f;
@@ -90,8 +90,7 @@ public class GuardDetection : MonoBehaviour
     [Header("Catch / Game Over")]
     public TMP_Text messageText;
     public string caughtMessage = "You've been caught!";
-    public string mainMenuScene = "Main Menu";
-    public float catchDelay = 2f;
+    public GameOverManager gameOverManager;
 
     [Header("Spotted Message")]
     public string spottedMessage = "You've been seen!";
@@ -470,17 +469,16 @@ public class GuardDetection : MonoBehaviour
         if (messageText != null)
             messageText.text = caughtMessage;
 
-        Debug.Log("Player caught! Returning to main menu.");
+        Debug.Log("Player caught! Showing Game Over panel.");
 
-        Invoke(nameof(GoToMainMenu), catchDelay);
-    }
-
-    private void GoToMainMenu()
-    {
-        SceneManager.LoadScene(mainMenuScene);
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (gameOverManager != null)
+        {
+            gameOverManager.ShowGameOver();
+        }
+        else
+        {
+            Debug.LogError("Game Over Manager is not assigned on GuardDetection!", this);
+        }
     }
 
     void OnDrawGizmosSelected()
