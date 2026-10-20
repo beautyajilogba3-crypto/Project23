@@ -112,6 +112,8 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Rotation: 2.5722568
+    - _Rotation: 9.944165
+ab8691d7d526e6f87ba7da6a4375f1960c578d5a
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
