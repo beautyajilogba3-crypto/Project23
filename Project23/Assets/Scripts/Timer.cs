@@ -1,80 +1,93 @@
+
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 public class Timer : MonoBehaviour
 {
     public float timeRemaining = 300f;
     public bool timerrunning = false;
-    public TMP_Text timetext;   //this displays how many seconds are left
-    public TMP_Text messageText;         //text ui to display when time is up
+
+    public TMP_Text timetext;
+    public TMP_Text messageText;
 
     public string mainmenu = "Main Menu";
-    public float delay = 2f;        //transition delay between time up message and reutrn to main emnu
+    public float delay = 2f;
     public GameObject deathParticle;
-    [Tooltip("Message shown when the timer runs out (different from the guard-catch message).")]
-    public string timeUpMessage = "You did not make it out with the artifact piece.               GAME OVER";
+
+    public GameOverManager gameOverManager;
+
+    [Tooltip("Message shown when the timer runs out.")]
+    public string timeUpMessage =
+        "You did not make it out with the artifact piece. GAME OVER";
 
     private bool timerEnded = false;
 
-    void Start()                        //timer is now running, clear the time-up-message text ui
+    void Start()
     {
         timerrunning = true;
 
         if (messageText != null)
             messageText.text = "";
+
+        if (timetext != null)
+            DisplayTime(timeRemaining);
     }
 
     void Update()
     {
-        if (timerrunning)
+        if (!timerrunning)
+            return;
+
+        if (timeRemaining > 0)
         {
-            if (timeRemaining > 0)            //decrease time val by 1 if its not 0 yet
+            timeRemaining -= Time.deltaTime;
+
+            if (timeRemaining < 0)
+                timeRemaining = 0;
+
+            DisplayTime(timeRemaining);
+        }
+        else
+        {
+            timeRemaining = 0;
+            timerrunning = false;
+
+            if (!timerEnded)
             {
-                timeRemaining -= Time.deltaTime;    //delta time as the change in time
-
-                DisplayTime(timeRemaining);
+                timerEnded = true;
+                TimeUp();
             }
-            else
-            {
-                timeRemaining = 0;             //otherwise it has hit 0, update bool flag
-                timerrunning = false;
+        }
 
-                if (!timerEnded)              //call time-up function
-                {
-                    timerEnded = true;
-                    TimeUp();
-                }
-            }
-
-            if (timeRemaining <= 10f)         //time display getts bigger and turns red when its 10 sec till 0 sec
-
+        if (timetext != null)
+        {
+            if (timeRemaining <= 10f)
             {
                 timetext.color = Color.red;
                 timetext.fontSize = 77;
             }
             else
             {
-                timetext.color = Color.lightGreen;
+                timetext.color = Color.green;
                 timetext.fontSize = 64;
             }
         }
     }
 
-    void DisplayTime(float timeToDisplay)              //function that update the text ui that displays time left. update occurs every second
+    void DisplayTime(float timeToDisplay)
     {
-        timeToDisplay += 1;
+        timeToDisplay = Mathf.Max(0, timeToDisplay);
 
-        float minutes = Mathf.FloorToInt(timeToDisplay / 60);
-        float seconds = Mathf.FloorToInt(timeToDisplay % 60);
+        int minutes = Mathf.FloorToInt(timeToDisplay / 60);
+        int seconds = Mathf.FloorToInt(timeToDisplay % 60);
 
-        string formattedTime = string.Format("{0:00}:{1:00}", minutes, seconds);
+        string formattedTime =
+            string.Format("{0:00}:{1:00}", minutes, seconds);
 
         if (timetext != null)
             timetext.text = formattedTime;
-        else
-            Debug.Log(formattedTime);
     }
+
     void TimeUp()
     {
         if (messageText != null)
@@ -83,23 +96,31 @@ public class Timer : MonoBehaviour
         if (deathParticle != null)
             deathParticle.SetActive(true);
 
-        Debug.Log("Time's up! Now returning to main menu");
+        timerrunning = false;
 
-        Invoke(nameof(GoToMainMenu), delay);
+        if (gameOverManager != null)
+        {
+            gameOverManager.ShowGameOver();
+        }
+        else
+        {
+            Debug.LogError(
+                "GameOverManager is not assigned in the Timer Inspector!"
+            );
+        }
     }
 
-    void GoToMainMenu()
-    {
-        SceneManager.LoadScene(mainmenu);
-
-        Cursor.lockState = CursorLockMode.None;          //after teleporting back to the menu, the cursor was gone and nothing could
-        Cursor.visible = true;                     //be clicked. these 2 lines resolve that issue
-    }
-
-    public void StopTimer()                    //stop timer if player escaped with obj
+    public void StopTimer()
     {
         timerrunning = false;
         CancelInvoke(nameof(GoToMainMenu));
     }
-}
 
+    void GoToMainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(mainmenu);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+}
