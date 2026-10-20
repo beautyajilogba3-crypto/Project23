@@ -10728,7 +10728,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -156.52594, y: -103}
+  m_AnchoredPosition: {x: -172.00006, y: 83}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &305989276
@@ -21531,8 +21531,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 24}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 14.5}
+  m_SizeDelta: {x: 0, y: 19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &545320562
 MonoBehaviour:
@@ -31902,7 +31902,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.48973694, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 236.51727, y: -81}
+  m_AnchoredPosition: {x: 236.51715, y: -81}
   m_SizeDelta: {x: 98.017334, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &713643457
@@ -39482,7 +39482,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &922642024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65296,6 +65296,7 @@ GameObject:
   - component: {fileID: 1489184107}
   - component: {fileID: 1489184108}
   - component: {fileID: 1489184109}
+  - component: {fileID: 1489184110}
   m_Layer: 5
   m_Name: timetext
   m_TagString: Untagged
@@ -65350,7 +65351,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TIME
+  m_text: 00:01
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5b4b0041f00cf094ba9aa741e5266728, type: 2}
   m_sharedMaterial: {fileID: -3029806900333824840, guid: 5b4b0041f00cf094ba9aa741e5266728, type: 2}
@@ -65422,6 +65423,27 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1489184110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489184106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d055abcf8e04be84abbd92df065d8f99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Timer
+  timeRemaining: 300
+  timerrunning: 0
+  timetext: {fileID: 1489184109}
+  messageText: {fileID: 780200328}
+  mainmenu: Main Menu
+  delay: 2
+  deathParticle: {fileID: 0}
+  timeUpMessage: You did not make it out with the artifact piece.               GAME
+    OVER
 --- !u!43 &1503801973
 Mesh:
   m_ObjectHideFlags: 0
@@ -77620,7 +77642,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 255.00006, y: -10}
+  m_AnchoredPosition: {x: 270.47418, y: 4}
   m_SizeDelta: {x: 883.7457, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1850900490
