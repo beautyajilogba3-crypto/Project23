@@ -3634,7 +3634,7 @@ Transform:
   m_GameObject: {fileID: 123113910}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -11.01, y: 3.01, z: -13.86}
+  m_LocalPosition: {x: -11.01, y: 3.01, z: -19.52}
   m_LocalScale: {x: 0.875, y: 1.7720733, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30362,7 +30362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
       propertyPath: m_LocalScale.y
-      value: 56.431072
+      value: -58.78425
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -30404,6 +30404,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 87c79e3638224fe4d90ff1910d6c8008, type: 2}
     - target: {fileID: 919132149155446097, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
       propertyPath: m_Name
       value: 'Museum_Paintings1 '
@@ -55957,7 +55961,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d02502130a6dab64da0d959cc60cc42f, type: 2}
+  - {fileID: 2100000, guid: 5dd6a600ed04acd4aa86f1d75a39f85d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -55998,8 +56002,8 @@ Transform:
   m_GameObject: {fileID: 1095934346}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -11.01, y: 3.01, z: -13.86}
-  m_LocalScale: {x: 2.6559458, y: 2.141196, z: 1}
+  m_LocalPosition: {x: -11.01, y: 2.69, z: -14.49}
+  m_LocalScale: {x: 2.6559458, y: 3.0869622, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2007354150}
@@ -65479,7 +65483,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
       propertyPath: m_LocalScale.x
-      value: 57.142853
+      value: 151.90285
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
       propertyPath: m_LocalScale.y
@@ -65525,6 +65529,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 0c9c174fc45a7064f91872052843f843, type: 2}
     - target: {fileID: 919132149155446097, guid: 94cbc8d9531dc1444beabc452e20f9c9, type: 3}
       propertyPath: m_Name
       value: 'Museum_Paintings1 '
@@ -92930,7 +92938,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d02502130a6dab64da0d959cc60cc42f, type: 2}
+  - {fileID: 2100000, guid: 0c9c174fc45a7064f91872052843f843, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101682,7 +101690,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d02502130a6dab64da0d959cc60cc42f, type: 2}
+  - {fileID: 2100000, guid: 87c79e3638224fe4d90ff1910d6c8008, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101722,14 +101730,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2056509422}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -11.01, y: 1.46, z: -18.21}
-  m_LocalScale: {x: 0.875, y: 1.7720733, z: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 14.84, y: 2.32, z: -21.52}
+  m_LocalScale: {x: 4.9746222, y: 2.4101539, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 615170243}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1 &2059801393
 GameObject:
   m_ObjectHideFlags: 0
