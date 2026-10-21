@@ -23399,8 +23399,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
-  idleClip: {fileID: 4481803272877397582, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
-  walkClip: {fileID: -9081999900557726759, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+  idleClip: {fileID: -7244266556882899218, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  walkClip: {fileID: -9081999900557726759, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
   runClip: {fileID: 0}
   blendSmoothing: 8
   debugLog: 1
@@ -31756,6 +31756,7 @@ GameObject:
   - component: {fileID: 636529566}
   - component: {fileID: 636529565}
   - component: {fileID: 636529564}
+  - component: {fileID: 636529571}
   - component: {fileID: 636529570}
   m_Layer: 0
   m_Name: 'Corridor Patrol Security Guard '
@@ -31960,6 +31961,23 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &636529571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 636529563}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
+  idleClip: {fileID: -7244266556882899218, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  walkClip: {fileID: -9081999900557726759, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  runClip: {fileID: 0}
+  blendSmoothing: 8
+  debugLog: 1
 --- !u!1 &640571717
 GameObject:
   m_ObjectHideFlags: 0
@@ -74536,8 +74554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
-  idleClip: {fileID: 4481803272877397582, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
-  walkClip: {fileID: 3741830241649414575, guid: b9d575a221ee2104aa557d1b5c289b28, type: 3}
+  idleClip: {fileID: -7244266556882899218, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  walkClip: {fileID: -9081999900557726759, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
   runClip: {fileID: 0}
   blendSmoothing: 8
   debugLog: 1
@@ -97256,6 +97274,7 @@ GameObject:
   - component: {fileID: 1929660690}
   - component: {fileID: 1929660689}
   - component: {fileID: 1929660688}
+  - component: {fileID: 1929660695}
   - component: {fileID: 1929660694}
   m_Layer: 0
   m_Name: 'Room 2 Patrol Security Guard '
@@ -97460,6 +97479,23 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1929660695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929660687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
+  idleClip: {fileID: -7244266556882899218, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  walkClip: {fileID: -9081999900557726759, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  runClip: {fileID: 0}
+  blendSmoothing: 8
+  debugLog: 1
 --- !u!1 &1934252888
 GameObject:
   m_ObjectHideFlags: 0
@@ -102291,6 +102327,7 @@ GameObject:
   - component: {fileID: 2075354827}
   - component: {fileID: 2075354826}
   - component: {fileID: 2075354825}
+  - component: {fileID: 2075354832}
   - component: {fileID: 2075354831}
   m_Layer: 0
   m_Name: 'Room 3 Patrol Security Guard '
@@ -102495,6 +102532,23 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &2075354832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2075354824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d271d4c4b081cc45b283e0a256d5d99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardAnimation
+  idleClip: {fileID: -7244266556882899218, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  walkClip: {fileID: -9081999900557726759, guid: a1bb6b90c36fedf42bf114a58a57d1a2, type: 3}
+  runClip: {fileID: 0}
+  blendSmoothing: 8
+  debugLog: 1
 --- !u!1 &2075754178
 GameObject:
   m_ObjectHideFlags: 0
