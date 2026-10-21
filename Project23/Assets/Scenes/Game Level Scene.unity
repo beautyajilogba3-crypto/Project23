@@ -23797,7 +23797,7 @@ MonoBehaviour:
   messageText: {fileID: 780200328}
   caughtMessage: 
   gameOverManager: {fileID: 371402611}
-  spottedMessage: 
+  spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
 --- !u!195 &502432617
@@ -75973,7 +75973,7 @@ MonoBehaviour:
   messageText: {fileID: 780200328}
   caughtMessage: 
   gameOverManager: {fileID: 371402611}
-  spottedMessage: 
+  spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
 --- !u!23 &1450218465
@@ -99639,7 +99639,7 @@ MonoBehaviour:
   messageText: {fileID: 780200328}
   caughtMessage: 
   gameOverManager: {fileID: 371402611}
-  spottedMessage: 
+  spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
 --- !u!23 &1929660691
@@ -104797,7 +104797,7 @@ MonoBehaviour:
   messageText: {fileID: 780200328}
   caughtMessage: 
   gameOverManager: {fileID: 371402611}
-  spottedMessage: 
+  spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
 --- !u!23 &2075354828
