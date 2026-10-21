@@ -62,12 +62,15 @@ public class TextAnim : MonoBehaviour
         isTyping = true;
         _textMeshPro.ForceMeshUpdate();
 
-        int totalVisibleCharacters = _textMeshPro.textInfo.characterCount;
+        int totalVisibleCharacters =
+            _textMeshPro.textInfo.characterCount;
+
         int counter = 0;
         _textMeshPro.maxVisibleCharacters = 0;
 
-        if (typewriterAudio != null)
+        if (typewriterAudio != null && typewriterSound != null)
         {
+            typewriterAudio.clip = typewriterSound;
             typewriterAudio.loop = true;
             typewriterAudio.Play();
         }
@@ -76,6 +79,7 @@ public class TextAnim : MonoBehaviour
         {
             _textMeshPro.maxVisibleCharacters = counter;
             counter++;
+
             yield return new WaitForSecondsRealtime(timeBtwnChars);
         }
 
@@ -120,14 +124,25 @@ public class TextAnim : MonoBehaviour
         EndCheck();
     }
 
-    void StartGame()
+    public void StartGame()
     {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
         if (typewriterAudio != null)
         {
             typewriterAudio.Stop();
         }
 
-        _textMeshPro.text = "";
+        isTyping = false;
+
+        if (_textMeshPro != null)
+        {
+            _textMeshPro.text = "";
+        }
 
         if (narrationPanel != null)
         {
@@ -142,4 +157,3 @@ public class TextAnim : MonoBehaviour
         Time.timeScale = 1f;
     }
 }
-
