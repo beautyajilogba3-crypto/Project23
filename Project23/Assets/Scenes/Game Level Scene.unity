@@ -82618,6 +82618,8 @@ MonoBehaviour:
   pickupPrompt: {fileID: 305989274}
   throwForce: 10
   throwUpwardBoost: 1
+  playerAnimator: {fileID: 0}
+  animationMoveThreshold: 0.01
 --- !u!114 &1589363652
 MonoBehaviour:
   m_ObjectHideFlags: 0

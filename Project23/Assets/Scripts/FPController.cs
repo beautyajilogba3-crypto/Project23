@@ -30,6 +30,9 @@ public class FPController : MonoBehaviour
     [Header("Throw Settings")]
     public float throwForce = 10f;
     public float throwUpwardBoost = 1f;
+    [Header("Animation Settings")]
+    public Animator playerAnimator;
+    public float animationMoveThreshold = 0.01f;
     private CharacterController controller;
     private Vector2 moveInput;
     private Vector2 lookInput;
@@ -46,12 +49,25 @@ public class FPController : MonoBehaviour
         originalMoveSpeed = moveSpeed;
         //Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
+        // Find the Animator on this object or its children.
+        if (playerAnimator == null)
+        {
+            playerAnimator = GetComponentInChildren<Animator>();
+        }
+
+        if (playerAnimator == null)
+        {
+            Debug.LogWarning(
+                "FPController: No Animator found on Player or its children."
+            );
+        }
     }
     private void Update()
     {
         HandleMovement();
         HandleLook();
         CheckForArtefact();
+        HandleAnimation();
     }
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -86,6 +102,19 @@ public class FPController : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
     // Handles the player's camera and body rotation.
+    // Handles walking animation.
+    private void HandleAnimation()
+    {
+        if (playerAnimator == null)
+            return;
+
+        bool isMoving =
+            moveInput.sqrMagnitude >
+            animationMoveThreshold * animationMoveThreshold;
+
+        playerAnimator.SetBool("IsWalking", isMoving);
+    }
+    // Handles camera look and player rotation
     public void HandleLook()
     {
         // Calculates horizontal camera movement using the look input
