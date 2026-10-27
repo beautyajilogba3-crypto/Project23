@@ -1,4 +1,4 @@
-
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using TMPro;
@@ -97,6 +97,43 @@ public class GuardDetection : MonoBehaviour
     public float spottedMessageDuration = 1.5f;
     public Timer timer;
 
+    [Header("Investigate Safety")]
+    [Tooltip("Guards search a random spot this close to where the player was last seen, so two guards don't try to stand on the exact same point and block each other.")]
+    public float investigateSpread = 1.5f;
+
+    [Tooltip("If the guard hasn't reached its search spot after this many seconds, it stops walking and starts its wait anyway.")]
+    public float investigateMaxTravelTime = 8f;
+
+    [Tooltip("If the guard is blocked and barely moving for this many seconds, it counts as arrived.")]
+    public float investigateStuckTime = 1f;
+
+    [Header("Lockdown (triggered by collecting the final artifact)")]
+    [Tooltip("Chase speed used during lockdown (normal chase speed is the Chase Speed field above).")]
+    public float lockdownChaseSpeed = 4.159f;
+
+    [Tooltip("Patrol walk speed used during lockdown (replaces GuardPatrol's Walk Speed).")]
+    public float lockdownPatrolSpeed = 3.75f;
+
+    [Tooltip("Colour of the light and vision cone during lockdown.")]
+    public Color lockdownColor = new Color(0.6f, 0.1f, 1f);
+
+    [Tooltip("Light intensity while in lockdown and not chasing.")]
+    public float lockdownLightIntensity = 8f;
+
+    [Tooltip("Alarm clip. Remember to credit the source in your submission. Only the first guard with a clip plays it, so the alarm doesn't stack.")]
+    public AudioClip alarmSound;
+    [Range(0f, 1f)] public float alarmVolume = 1f;
+
+    [Tooltip("Seconds of alarm before it is cut off.")]
+    public float alarmDuration = 2.5f;
+
+    [Tooltip("Optional. A second AudioSource used only for the alarm. If left empty, one is created automatically.")]
+    public AudioSource alarmSource;
+
+    [Tooltip("Message shown on screen when lockdown starts.")]
+    public string lockdownMessage = "LOCKDOWN!";
+    public float lockdownMessageDuration = 2f;
+
     private GuardPatrol patrol;
     private NavMeshAgent agent;
     private float patrolAgentSpeed;
@@ -113,6 +150,13 @@ public class GuardDetection : MonoBehaviour
     private AudioSource audioSource;
     private float lastDetectedSoundTime = -999f;
 
+    private Vector3 investigateTarget;
+    private float investigateTravelTimer;
+    private float investigateStuckTimer;
+
+    private bool lockdown = false;
+    private static float lastAlarmTime = -999f; // shared so several guards don't stack several alarms
+
     void Awake()
     {
         patrol = GetComponent<GuardPatrol>();
@@ -124,6 +168,17 @@ public class GuardDetection : MonoBehaviour
         SetupLight();
         SetupVisionCone();
         SetupAudio();
+        SetupAlarmAudio();
+    }
+
+    void OnEnable()
+    {
+        ArtefactCounter.OnAllArtefactsCollected += EnterLockdown;
+    }
+
+    void OnDisable()
+    {
+        ArtefactCounter.OnAllArtefactsCollected -= EnterLockdown;
     }
 
     void Update()
@@ -180,23 +235,23 @@ public class GuardDetection : MonoBehaviour
 
                 if (!investigateArrived)
                 {
-                    if (HasArrivedAtLastKnown())
+                    investigateTravelTimer += Time.deltaTime;
+
+                    if (HasArrivedAtInvestigateTarget() || investigateTravelTimer >= investigateMaxTravelTime)
                     {
                         investigateArrived = true;
                         StopMoving();
                     }
                     else
                     {
-                        MoveTowards(lastKnownPosition);
+                        MoveTowards(investigateTarget);
                     }
                 }
                 else
                 {
                     investigateTimer -= Time.deltaTime;
                     if (investigateTimer <= 0f)
-                    {
                         EnterPatrol();
-                    }
                 }
                 break;
         }
@@ -204,6 +259,71 @@ public class GuardDetection : MonoBehaviour
         UpdateDetectionLight();
         UpdateVisionCone();
     }
+
+    // ---------- Lockdown ----------
+
+    private void EnterLockdown()
+    {
+        if (lockdown)
+            return;
+
+        lockdown = true;
+
+        // Speed buff using fixed values. patrolAgentSpeed is what EnterPatrol restores,
+        // so patrol stays buffed after a chase too.
+        chaseSpeed = lockdownChaseSpeed;
+        patrolAgentSpeed = lockdownPatrolSpeed;
+        if (patrol != null)
+            patrol.walkSpeed = lockdownPatrolSpeed;
+
+        // If already patrolling, apply the new speed right away.
+        if (state == GuardState.Patrolling && agent != null && agent.isOnNavMesh)
+            agent.speed = lockdownPatrolSpeed;
+
+        // Alarm + message, only once across all guards.
+        if (alarmSound != null && Time.time - lastAlarmTime > 0.1f)
+        {
+            lastAlarmTime = Time.time;
+            StartCoroutine(PlayAlarmBriefly());
+            ShowLockdownMessage();
+        }
+        else if (alarmSound == null && Time.time - lastAlarmTime > 0.1f)
+        {
+            // No clip assigned on this guard: still show the message once.
+            lastAlarmTime = Time.time;
+            ShowLockdownMessage();
+        }
+    }
+
+    private IEnumerator PlayAlarmBriefly()
+    {
+        if (alarmSource == null)
+            yield break;
+
+        alarmSource.clip = alarmSound;
+        alarmSource.volume = alarmVolume;
+        alarmSource.loop = false;
+        alarmSource.Play();
+
+        yield return new WaitForSeconds(alarmDuration);
+
+        if (alarmSource != null && alarmSource.clip == alarmSound)
+            alarmSource.Stop();
+    }
+
+    private void ShowLockdownMessage()
+    {
+        if (messageText == null)
+            return;
+
+        MessagePump pump = messageText.GetComponent<MessagePump>();
+        if (pump == null)
+            pump = messageText.gameObject.AddComponent<MessagePump>();
+
+        pump.ShowThenClear(messageText, lockdownMessage, lockdownMessageDuration);
+    }
+
+    // ---------- Detection ----------
 
     private bool IsInDetectionCone(float horizontalDistance)
     {
@@ -248,6 +368,8 @@ public class GuardDetection : MonoBehaviour
         return true;
     }
 
+    // ---------- State changes ----------
+
     private void EnterChase()
     {
         state = GuardState.Chasing;
@@ -262,6 +384,19 @@ public class GuardDetection : MonoBehaviour
         state = GuardState.Investigating;
         investigateTimer = investigateWaitTime;
         investigateArrived = false;
+        investigateTravelTimer = 0f;
+        investigateStuckTimer = 0f;
+
+        // Pick a search spot near where the player was last seen, snapped onto the NavMesh,
+        // so it's always reachable and two guards don't choose the identical point.
+        Vector2 offset = Random.insideUnitCircle * investigateSpread;
+        Vector3 candidate = lastKnownPosition + new Vector3(offset.x, 0f, offset.y);
+
+        investigateTarget = lastKnownPosition;
+        if (NavMesh.SamplePosition(candidate, out NavMeshHit candidateHit, 3f, NavMesh.AllAreas))
+            investigateTarget = candidateHit.position;
+        else if (NavMesh.SamplePosition(lastKnownPosition, out NavMeshHit lastHit, 3f, NavMesh.AllAreas))
+            investigateTarget = lastHit.position;
     }
 
     private void EnterPatrol()
@@ -278,6 +413,8 @@ public class GuardDetection : MonoBehaviour
         patrol.patrolling = true;
         patrol.ResetPatrolOrigin();
     }
+
+    // ---------- Movement ----------
 
     private void MoveTowards(Vector3 target)
     {
@@ -307,14 +444,30 @@ public class GuardDetection : MonoBehaviour
         }
     }
 
-    private bool HasArrivedAtLastKnown()
+    private bool HasArrivedAtInvestigateTarget()
     {
-        if (HorizontalDistance(transform.position, lastKnownPosition) <= investigateArriveDistance)
+        if (HorizontalDistance(transform.position, investigateTarget) <= investigateArriveDistance)
             return true;
 
-        if (agent != null && agent.isOnNavMesh && agent.hasPath && !agent.pathPending
-            && agent.remainingDistance <= Mathf.Max(investigateArriveDistance, agent.stoppingDistance))
-            return true;
+        if (agent != null && agent.isOnNavMesh && !agent.pathPending)
+        {
+            // The agent finished its path (it can stop short of the exact point).
+            if (agent.hasPath && agent.remainingDistance <= Mathf.Max(investigateArriveDistance, agent.stoppingDistance))
+                return true;
+
+            // Blocked or unreachable: barely moving for a while counts as arrived,
+            // so a guard can never stand there forever.
+            if (agent.velocity.sqrMagnitude < 0.01f)
+            {
+                investigateStuckTimer += Time.deltaTime;
+                if (investigateStuckTimer >= investigateStuckTime)
+                    return true;
+            }
+            else
+            {
+                investigateStuckTimer = 0f;
+            }
+        }
 
         return false;
     }
@@ -325,6 +478,8 @@ public class GuardDetection : MonoBehaviour
         b.y = 0f;
         return Vector3.Distance(a, b);
     }
+
+    // ---------- Light ----------
 
     private void SetupLight()
     {
@@ -356,26 +511,36 @@ public class GuardDetection : MonoBehaviour
         Color targetColor;
         float targetIntensity;
 
-        switch (state)
+        if (lockdown)
         {
-            case GuardState.Chasing:
-                targetColor = chaseLightColor;
-                targetIntensity = chaseLightIntensity;
-                break;
-            case GuardState.Investigating:
-                targetColor = investigateLightColor;
-                targetIntensity = investigateLightIntensity;
-                break;
-            default:
-                targetColor = patrolLightColor;
-                targetIntensity = patrolLightIntensity;
-                break;
+            targetColor = lockdownColor;
+            targetIntensity = (state == GuardState.Chasing) ? chaseLightIntensity : lockdownLightIntensity;
+        }
+        else
+        {
+            switch (state)
+            {
+                case GuardState.Chasing:
+                    targetColor = chaseLightColor;
+                    targetIntensity = chaseLightIntensity;
+                    break;
+                case GuardState.Investigating:
+                    targetColor = investigateLightColor;
+                    targetIntensity = investigateLightIntensity;
+                    break;
+                default:
+                    targetColor = patrolLightColor;
+                    targetIntensity = patrolLightIntensity;
+                    break;
+            }
         }
 
         float t = Time.deltaTime * lightTransitionSpeed;
         detectionLight.color = Color.Lerp(detectionLight.color, targetColor, t);
         detectionLight.intensity = Mathf.Lerp(detectionLight.intensity, targetIntensity, t);
     }
+
+    // ---------- Vision cone ----------
 
     private void SetupVisionCone()
     {
@@ -411,11 +576,14 @@ public class GuardDetection : MonoBehaviour
         currentConeOpacity = Mathf.MoveTowards(currentConeOpacity, targetOpacity, Time.deltaTime * 3f);
 
         Color activeColor = patrolLightColor;
-        if (state == GuardState.Chasing) activeColor = chaseLightColor;
+        if (lockdown) activeColor = lockdownColor;
+        else if (state == GuardState.Chasing) activeColor = chaseLightColor;
         else if (state == GuardState.Investigating) activeColor = investigateLightColor;
 
         visionCone.Configure(detectionRange, detectionAngle, activeColor, currentConeOpacity, coneHeight, obstacleMask, player);
     }
+
+    // ---------- Audio ----------
 
     private void SetupAudio()
     {
@@ -432,6 +600,20 @@ public class GuardDetection : MonoBehaviour
         }
     }
 
+    private void SetupAlarmAudio()
+    {
+        // The alarm needs its own AudioSource so stopping it never cuts off the "spotted" sound.
+        if (alarmSound == null)
+            return;
+
+        if (alarmSource == null || alarmSource == audioSource)
+            alarmSource = gameObject.AddComponent<AudioSource>();
+
+        alarmSource.playOnAwake = false;
+        alarmSource.loop = false;
+        alarmSource.spatialBlend = 0f; // 2D so the player hears it clearly wherever they are
+    }
+
     private void PlayDetectedSound()
     {
         if (detectedSound == null || audioSource == null)
@@ -445,6 +627,8 @@ public class GuardDetection : MonoBehaviour
         audioSource.PlayOneShot(detectedSound);
         lastDetectedSoundTime = Time.time;
     }
+
+    // ---------- Messages ----------
 
     private void ShowSpottedMessage()
     {

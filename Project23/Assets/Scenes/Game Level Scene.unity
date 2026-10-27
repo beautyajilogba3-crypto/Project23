@@ -23800,6 +23800,19 @@ MonoBehaviour:
   spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
+  investigateSpread: 1.5
+  investigateMaxTravelTime: 8
+  investigateStuckTime: 1
+  lockdownChaseSpeed: 4.15
+  lockdownPatrolSpeed: 3.75
+  lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
+  lockdownLightIntensity: 8
+  alarmSound: {fileID: 0}
+  alarmVolume: 1
+  alarmDuration: 2.5
+  alarmSource: {fileID: 0}
+  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessageDuration: 3.5
 --- !u!195 &502432617
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -32490,6 +32503,19 @@ MonoBehaviour:
   spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
+  investigateSpread: 1.5
+  investigateMaxTravelTime: 8
+  investigateStuckTime: 1
+  lockdownChaseSpeed: 4.15
+  lockdownPatrolSpeed: 3.75
+  lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
+  lockdownLightIntensity: 8
+  alarmSound: {fileID: 0}
+  alarmVolume: 1
+  alarmDuration: 2.5
+  alarmSource: {fileID: 0}
+  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessageDuration: 3.5
 --- !u!23 &636529567
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75976,6 +76002,19 @@ MonoBehaviour:
   spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
+  investigateSpread: 1.5
+  investigateMaxTravelTime: 8
+  investigateStuckTime: 1
+  lockdownChaseSpeed: 4.15
+  lockdownPatrolSpeed: 3.75
+  lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
+  lockdownLightIntensity: 8
+  alarmSound: {fileID: 0}
+  alarmVolume: 1
+  alarmDuration: 2.5
+  alarmSource: {fileID: 0}
+  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessageDuration: 3.5
 --- !u!23 &1450218465
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -99642,6 +99681,19 @@ MonoBehaviour:
   spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
+  investigateSpread: 1.5
+  investigateMaxTravelTime: 8
+  investigateStuckTime: 1
+  lockdownChaseSpeed: 4.15
+  lockdownPatrolSpeed: 3.75
+  lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
+  lockdownLightIntensity: 8
+  alarmSound: {fileID: 0}
+  alarmVolume: 1
+  alarmDuration: 2.5
+  alarmSource: {fileID: 0}
+  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessageDuration: 3.5
 --- !u!23 &1929660691
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -104800,6 +104852,19 @@ MonoBehaviour:
   spottedMessage: You've been seen!
   spottedMessageDuration: 1.5
   timer: {fileID: 922642024}
+  investigateSpread: 1.5
+  investigateMaxTravelTime: 8
+  investigateStuckTime: 1
+  lockdownChaseSpeed: 4.15
+  lockdownPatrolSpeed: 3.75
+  lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
+  lockdownLightIntensity: 8
+  alarmSound: {fileID: 0}
+  alarmVolume: 1
+  alarmDuration: 2.5
+  alarmSource: {fileID: 0}
+  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessageDuration: 3.5
 --- !u!23 &2075354828
 MeshRenderer:
   m_ObjectHideFlags: 0
