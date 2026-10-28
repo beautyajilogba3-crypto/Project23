@@ -23767,6 +23767,11 @@ MonoBehaviour:
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 3.75
+  chaseSnapRadius: 8
+  blockedCatchRange: 3.5
+  blockedCatchDelay: 0.4
+  blockedSpeedThreshold: 0.6
+  maxCatchHeightDifference: 4.5
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
   detectionLight: {fileID: 0}
@@ -23803,16 +23808,19 @@ MonoBehaviour:
   investigateSpread: 1.5
   investigateMaxTravelTime: 8
   investigateStuckTime: 1
-  lockdownChaseSpeed: 4.15
-  lockdownPatrolSpeed: 3.75
+  lockdownChaseSpeed: 4.4
+  lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 0}
-  alarmVolume: 1
-  alarmDuration: 2.5
+  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
+  alarmVolume: 0.75
+  alarmLoops: 1
+  alarmDuration: 60
   alarmSource: {fileID: 0}
-  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessage: 'LOCKDOWN! Guards move faster '
   lockdownMessageDuration: 3.5
+  lockdownTextColor: {r: 0.7, g: 0.3, b: 1, a: 1}
+  lockdownFontScale: 1.4
 --- !u!195 &502432617
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -32470,6 +32478,11 @@ MonoBehaviour:
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 3.75
+  chaseSnapRadius: 8
+  blockedCatchRange: 3.5
+  blockedCatchDelay: 0.4
+  blockedSpeedThreshold: 0.6
+  maxCatchHeightDifference: 3
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
   detectionLight: {fileID: 0}
@@ -32506,16 +32519,19 @@ MonoBehaviour:
   investigateSpread: 1.5
   investigateMaxTravelTime: 8
   investigateStuckTime: 1
-  lockdownChaseSpeed: 4.15
-  lockdownPatrolSpeed: 3.75
+  lockdownChaseSpeed: 4.4
+  lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 0}
-  alarmVolume: 1
-  alarmDuration: 2.5
+  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
+  alarmVolume: 0.75
+  alarmLoops: 1
+  alarmDuration: 60
   alarmSource: {fileID: 0}
-  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessage: 'LOCKDOWN! Guards move faster '
   lockdownMessageDuration: 3.5
+  lockdownTextColor: {r: 0.7, g: 0.3, b: 1, a: 1}
+  lockdownFontScale: 1.4
 --- !u!23 &636529567
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75969,6 +75985,11 @@ MonoBehaviour:
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 3.75
+  chaseSnapRadius: 8
+  blockedCatchRange: 3.5
+  blockedCatchDelay: 0.4
+  blockedSpeedThreshold: 0.6
+  maxCatchHeightDifference: 3
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
   detectionLight: {fileID: 0}
@@ -76005,16 +76026,19 @@ MonoBehaviour:
   investigateSpread: 1.5
   investigateMaxTravelTime: 8
   investigateStuckTime: 1
-  lockdownChaseSpeed: 4.15
-  lockdownPatrolSpeed: 3.75
+  lockdownChaseSpeed: 4.4
+  lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 0}
-  alarmVolume: 1
-  alarmDuration: 2.5
+  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
+  alarmVolume: 0.75
+  alarmLoops: 1
+  alarmDuration: 60
   alarmSource: {fileID: 0}
-  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessage: 'LOCKDOWN! Guards move faster '
   lockdownMessageDuration: 3.5
+  lockdownTextColor: {r: 0.7, g: 0.3, b: 1, a: 1}
+  lockdownFontScale: 1.4
 --- !u!23 &1450218465
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -99648,6 +99672,11 @@ MonoBehaviour:
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 3.75
+  chaseSnapRadius: 8
+  blockedCatchRange: 3.5
+  blockedCatchDelay: 0.4
+  blockedSpeedThreshold: 0.6
+  maxCatchHeightDifference: 3
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
   detectionLight: {fileID: 0}
@@ -99655,9 +99684,9 @@ MonoBehaviour:
   lightPitch: 15
   lightForwardOffset: 0.6
   lightCastsShadows: 1
-  patrolLightColor: {r: 1, g: 0.3, b: 0.25, a: 1}
+  patrolLightColor: {r: 1, g: 0, b: 0, a: 1}
   investigateLightColor: {r: 1, g: 0.65, b: 0.1, a: 1}
-  chaseLightColor: {r: 1, g: 0, b: 0, a: 1}
+  chaseLightColor: {r: 0.52201253, g: 0.02134004, b: 0.02134004, a: 1}
   patrolLightIntensity: 5
   investigateLightIntensity: 6
   chaseLightIntensity: 10
@@ -99684,16 +99713,19 @@ MonoBehaviour:
   investigateSpread: 1.5
   investigateMaxTravelTime: 8
   investigateStuckTime: 1
-  lockdownChaseSpeed: 4.15
-  lockdownPatrolSpeed: 3.75
+  lockdownChaseSpeed: 4.4
+  lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 0}
-  alarmVolume: 1
-  alarmDuration: 2.5
+  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
+  alarmVolume: 0.75
+  alarmLoops: 1
+  alarmDuration: 60
   alarmSource: {fileID: 0}
-  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessage: 'LOCKDOWN! Guards move faster '
   lockdownMessageDuration: 3.5
+  lockdownTextColor: {r: 0.7, g: 0.3, b: 1, a: 1}
+  lockdownFontScale: 1.4
 --- !u!23 &1929660691
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -104819,6 +104851,11 @@ MonoBehaviour:
   relentlessOnceSpotted: 0
   catchRange: 1.5
   chaseSpeed: 3.75
+  chaseSnapRadius: 8
+  blockedCatchRange: 3.5
+  blockedCatchDelay: 0.4
+  blockedSpeedThreshold: 0.6
+  maxCatchHeightDifference: 3
   investigateWaitTime: 3
   investigateArriveDistance: 0.5
   detectionLight: {fileID: 0}
@@ -104855,16 +104892,19 @@ MonoBehaviour:
   investigateSpread: 1.5
   investigateMaxTravelTime: 8
   investigateStuckTime: 1
-  lockdownChaseSpeed: 4.15
-  lockdownPatrolSpeed: 3.75
+  lockdownChaseSpeed: 4.4
+  lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 0}
-  alarmVolume: 1
-  alarmDuration: 2.5
+  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
+  alarmVolume: 0.75
+  alarmLoops: 1
+  alarmDuration: 60
   alarmSource: {fileID: 0}
-  lockdownMessage: 'LOCKDOWN! Guard moves faster '
+  lockdownMessage: 'LOCKDOWN! Guards move faster '
   lockdownMessageDuration: 3.5
+  lockdownTextColor: {r: 0.7, g: 0.3, b: 1, a: 1}
+  lockdownFontScale: 1.4
 --- !u!23 &2075354828
 MeshRenderer:
   m_ObjectHideFlags: 0

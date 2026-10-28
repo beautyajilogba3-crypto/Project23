@@ -43,6 +43,22 @@ public class GuardDetection : MonoBehaviour
     [Header("Chase Settings")]
     public float chaseSpeed = 4f;
 
+    [Header("Catch When Blocked (player standing on objects)")]
+    [Tooltip("How far from the player the guard may look for the nearest walkable floor when the player is off the NavMesh (e.g. on a crate). Make it a bit bigger than your largest object's half-width.")]
+    public float chaseSnapRadius = 8f;
+
+    [Tooltip("If the guard can't get any closer (the player is on a crate, table, etc.) it can still catch the player from this far away.")]
+    public float blockedCatchRange = 3.5f;
+
+    [Tooltip("How long the guard must be stuck at the edge before the catch happens, so the player gets a brief moment of tension.")]
+    public float blockedCatchDelay = 0.4f;
+
+    [Tooltip("The guard counts as 'stuck' when it moves slower than this (metres per second) while chasing.")]
+    public float blockedSpeedThreshold = 0.6f;
+
+    [Tooltip("Players higher than this above the guard can't be caught (e.g. on a balcony). Raise it if your objects are tall.")]
+    public float maxCatchHeightDifference = 3f;
+
     [Header("Investigate Settings")]
     public float investigateWaitTime = 3f;
     public float investigateArriveDistance = 0.5f;
@@ -124,8 +140,11 @@ public class GuardDetection : MonoBehaviour
     public AudioClip alarmSound;
     [Range(0f, 1f)] public float alarmVolume = 1f;
 
-    [Tooltip("Seconds of alarm before it is cut off.")]
-    public float alarmDuration = 2.5f;
+    [Tooltip("Loop the alarm clip so it keeps sounding. Needed for a siren that plays continuously.")]
+    public bool alarmLoops = true;
+
+    [Tooltip("Seconds of alarm before it is cut off. 0 = never stops (until the player is caught).")]
+    public float alarmDuration = 0f;
 
     [Tooltip("Optional. A second AudioSource used only for the alarm. If left empty, one is created automatically.")]
     public AudioSource alarmSource;
@@ -133,6 +152,12 @@ public class GuardDetection : MonoBehaviour
     [Tooltip("Message shown on screen when lockdown starts.")]
     public string lockdownMessage = "LOCKDOWN!";
     public float lockdownMessageDuration = 2f;
+
+    [Tooltip("Colour of the LOCKDOWN text. Other messages go back to their normal colour afterwards.")]
+    public Color lockdownTextColor = new Color(0.7f, 0.3f, 1f);
+
+    [Tooltip("Font size multiplier for the LOCKDOWN text. 1.4 = 40% bigger.")]
+    public float lockdownFontScale = 1.4f;
 
     private GuardPatrol patrol;
     private NavMeshAgent agent;
@@ -154,7 +179,12 @@ public class GuardDetection : MonoBehaviour
     private float investigateTravelTimer;
     private float investigateStuckTimer;
 
+    private float blockedTimer = 0f;
+    private Vector3 lastGuardPosition;
+
     private bool lockdown = false;
+    private static AudioSource activeAlarmSource; // so any guard can silence the alarm when the player is caught
+    private static float lastLockdownMessageTime = -999f;
     private static float lastAlarmTime = -999f; // shared so several guards don't stack several alarms
 
     void Awake()
@@ -214,7 +244,7 @@ public class GuardDetection : MonoBehaviour
                     lastKnownPosition = player.position;
                     MoveTowards(player.position);
 
-                    if (distance <= catchRange)
+                    if (distance <= catchRange || IsBlockedNextToPlayer(distance))
                     {
                         CatchPlayer();
                         return;
@@ -268,6 +298,7 @@ public class GuardDetection : MonoBehaviour
             return;
 
         lockdown = true;
+        Debug.Log($"{name}: LOCKDOWN started (alarm clip: {(alarmSound != null ? alarmSound.name : "NONE")}, message text: {(messageText != null ? "assigned" : "NOT assigned")})", this);
 
         // Speed buff using fixed values. patrolAgentSpeed is what EnterPatrol restores,
         // so patrol stays buffed after a chase too.
@@ -280,17 +311,17 @@ public class GuardDetection : MonoBehaviour
         if (state == GuardState.Patrolling && agent != null && agent.isOnNavMesh)
             agent.speed = lockdownPatrolSpeed;
 
-        // Alarm + message, only once across all guards.
+        // Alarm: played once across all guards, by the first guard that has a clip.
         if (alarmSound != null && Time.time - lastAlarmTime > 0.1f)
         {
             lastAlarmTime = Time.time;
             StartCoroutine(PlayAlarmBriefly());
-            ShowLockdownMessage();
         }
-        else if (alarmSound == null && Time.time - lastAlarmTime > 0.1f)
+
+        // Message: shown once across all guards, by the first guard that has Message Text assigned.
+        if (messageText != null && Time.time - lastLockdownMessageTime > 0.1f)
         {
-            // No clip assigned on this guard: still show the message once.
-            lastAlarmTime = Time.time;
+            lastLockdownMessageTime = Time.time;
             ShowLockdownMessage();
         }
     }
@@ -298,12 +329,21 @@ public class GuardDetection : MonoBehaviour
     private IEnumerator PlayAlarmBriefly()
     {
         if (alarmSource == null)
+        {
+            Debug.LogWarning($"{name}: alarm could not play - no AudioSource available.", this);
             yield break;
+        }
 
+        Debug.Log($"{name}: playing alarm (volume {alarmVolume}, loop {alarmLoops})", this);
         alarmSource.clip = alarmSound;
         alarmSource.volume = alarmVolume;
-        alarmSource.loop = false;
+        alarmSource.loop = alarmLoops;
         alarmSource.Play();
+        activeAlarmSource = alarmSource;
+
+        // 0 (or less) = keep playing until the player is caught.
+        if (alarmDuration <= 0f)
+            yield break;
 
         yield return new WaitForSeconds(alarmDuration);
 
@@ -320,7 +360,33 @@ public class GuardDetection : MonoBehaviour
         if (pump == null)
             pump = messageText.gameObject.AddComponent<MessagePump>();
 
-        pump.ShowThenClear(messageText, lockdownMessage, lockdownMessageDuration);
+        // Never shorter than half a second, so a 0 in the Inspector can't make the message invisible.
+        float duration = Mathf.Max(lockdownMessageDuration, 0.5f);
+
+        pump.ShowThenClear(messageText, lockdownMessage, duration);
+        StartCoroutine(LockdownTextStyleRoutine(duration));
+    }
+
+    // Makes the shared message text purple and bigger while LOCKDOWN is showing,
+    // then restores the original style so other messages look like they used to.
+    private IEnumerator LockdownTextStyleRoutine(float duration)
+    {
+        TMP_Text text = messageText;
+        Color originalColor = text.color;
+        float originalSize = text.fontSize;
+
+        text.color = lockdownTextColor;
+        text.fontSize = originalSize * lockdownFontScale;
+
+        float end = Time.time + duration;
+        while (Time.time < end && text != null && text.text == lockdownMessage)
+            yield return null;
+
+        if (text != null)
+        {
+            text.color = originalColor;
+            text.fontSize = originalSize;
+        }
     }
 
     // ---------- Detection ----------
@@ -370,8 +436,29 @@ public class GuardDetection : MonoBehaviour
 
     // ---------- State changes ----------
 
+    // True when the guard has run as far as it can toward the player but still can't reach
+    // them (e.g. the player is standing on a crate the NavMesh doesn't cover).
+    private bool IsBlockedNextToPlayer(float horizontalDistance)
+    {
+        // Measure how far the guard has actually moved this frame. This is more reliable than
+        // the agent's path flags, because the guard re-requests a path every frame while
+        // chasing and those flags keep flickering.
+        float movedThisFrame = HorizontalDistance(transform.position, lastGuardPosition);
+        float actualSpeed = Time.deltaTime > 0f ? movedThisFrame / Time.deltaTime : 0f;
+        lastGuardPosition = transform.position;
+
+        bool blocked = horizontalDistance <= blockedCatchRange
+                       && Mathf.Abs(player.position.y - transform.position.y) <= maxCatchHeightDifference
+                       && actualSpeed < blockedSpeedThreshold;
+
+        blockedTimer = blocked ? blockedTimer + Time.deltaTime : 0f;
+        return blockedTimer >= blockedCatchDelay;
+    }
+
     private void EnterChase()
     {
+        blockedTimer = 0f;
+        lastGuardPosition = transform.position;
         state = GuardState.Chasing;
         patrol.patrolling = false;
         lastKnownPosition = player.position;
@@ -420,7 +507,10 @@ public class GuardDetection : MonoBehaviour
     {
         if (agent != null && agent.isOnNavMesh)
         {
-            if (NavMesh.SamplePosition(target, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            // Snap the target to the nearest walkable spot. When the player is standing on an object
+            // the NavMesh doesn't cover, this is the floor right at the object's edge, so the guard
+            // walks right up to it instead of stopping somewhere far away.
+            if (NavMesh.SamplePosition(target, out NavMeshHit hit, chaseSnapRadius, NavMesh.AllAreas))
                 target = hit.position;
 
             agent.isStopped = false;
@@ -646,6 +736,10 @@ public class GuardDetection : MonoBehaviour
     {
         caught = true;
         StopMoving();
+
+        // Silence the siren so it doesn't blare over the Game Over screen.
+        if (activeAlarmSource != null)
+            activeAlarmSource.Stop();
 
         if (timer != null)
             timer.StopTimer();
