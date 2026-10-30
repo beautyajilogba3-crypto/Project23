@@ -1,4 +1,3 @@
-
 using TMPro;
 using UnityEngine;
 using System.Collections;
@@ -44,6 +43,11 @@ public class Artifactcollector : MonoBehaviour
             }
         }
 
+        // IMPORTANT: show the pickup message BEFORE updating the counter.
+        // Collecting the final artifact triggers the guards' lockdown message,
+        // and it must be shown after this one or it gets overwritten instantly.
+        ShowMessage();
+
         if (artefactCounter != null)
         {
             artefactCounter.CollectArtefact();
@@ -53,8 +57,6 @@ public class Artifactcollector : MonoBehaviour
             Debug.LogWarning(
                 $"{name}: No ArtefactCounter assigned!", this);
         }
-
-        ShowMessage();
 
         gameObject.SetActive(false);
     }
