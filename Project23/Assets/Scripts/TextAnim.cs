@@ -23,9 +23,12 @@ public class TextAnim : MonoBehaviour
     void Start()
     {
         Time.timeScale = 0f;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         EndCheck();
     }
-
     void EndCheck()
     {
         if (readyText != null)
@@ -153,6 +156,9 @@ public class TextAnim : MonoBehaviour
         {
             readyText.SetActive(false);
         }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
         Time.timeScale = 1f;
     }
