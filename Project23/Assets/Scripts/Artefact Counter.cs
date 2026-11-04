@@ -10,6 +10,7 @@ public class ArtefactCounter : MonoBehaviour
     public TMP_Text artefactText;
 
     private int artefactsCollected = 0;
+    public int ArtefactsCollected => artefactsCollected;
     public int totalArtefacts = 3;
 
     private void Start()
