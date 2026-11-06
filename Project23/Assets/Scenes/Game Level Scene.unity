@@ -24820,6 +24820,10 @@ MonoBehaviour:
   coneRayCount: 40
   coneFloorHeight: 2
   coneWallCheckHeight: 1
+  proximityDetectionRadius: 2
+  showProximityRadius: 1
+  proximityRadiusOpacity: 0.3
+  proximityRadiusFloorOffset: 0.06
   detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
   detectedVolume: 1
   detectedSoundSpatialBlend: 0
@@ -33997,6 +34001,10 @@ MonoBehaviour:
   coneRayCount: 40
   coneFloorHeight: 2
   coneWallCheckHeight: 1
+  proximityDetectionRadius: 2
+  showProximityRadius: 1
+  proximityRadiusOpacity: 0.3
+  proximityRadiusFloorOffset: 0.06
   detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
   detectedVolume: 1
   detectedSoundSpatialBlend: 0
@@ -79191,6 +79199,10 @@ MonoBehaviour:
   coneRayCount: 40
   coneFloorHeight: 2
   coneWallCheckHeight: 1
+  proximityDetectionRadius: 2
+  showProximityRadius: 1
+  proximityRadiusOpacity: 0.3
+  proximityRadiusFloorOffset: 0.06
   detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
   detectedVolume: 1
   detectedSoundSpatialBlend: 0
@@ -87917,7 +87929,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09b3877f84122574bbc76c30c5353f23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FPController
-  moveSpeed: 5
+  moveSpeed: 24
   gravity: -9.81
   jumpHeight: 1.5
   cameraTransform: {fileID: 330585546}
@@ -104187,6 +104199,10 @@ MonoBehaviour:
   coneRayCount: 40
   coneFloorHeight: 2
   coneWallCheckHeight: 1
+  proximityDetectionRadius: 2
+  showProximityRadius: 1
+  proximityRadiusOpacity: 0.3
+  proximityRadiusFloorOffset: 0.06
   detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
   detectedVolume: 1
   detectedSoundSpatialBlend: 0
@@ -109926,6 +109942,10 @@ MonoBehaviour:
   coneRayCount: 40
   coneFloorHeight: 2
   coneWallCheckHeight: 1
+  proximityDetectionRadius: 2
+  showProximityRadius: 1
+  proximityRadiusOpacity: 0.3
+  proximityRadiusFloorOffset: 0.06
   detectedSound: {fileID: 8300000, guid: 2dc282e3978bbe34c8d927d462712578, type: 3}
   detectedVolume: 1
   detectedSoundSpatialBlend: 0
