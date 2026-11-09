@@ -24841,8 +24841,8 @@ MonoBehaviour:
   lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
-  alarmVolume: 0.75
+  alarmSound: {fileID: 8300000, guid: d1f2066bfe12a96498960e21f12df859, type: 3}
+  alarmVolume: 0.65
   alarmLoops: 1
   alarmDuration: 60
   alarmSource: {fileID: 0}
@@ -27521,7 +27521,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 12}
+  m_AnchoredPosition: {x: 0, y: 12}
   m_SizeDelta: {x: 0, y: 19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &545320562
@@ -34022,8 +34022,8 @@ MonoBehaviour:
   lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
-  alarmVolume: 0.75
+  alarmSound: {fileID: 8300000, guid: d1f2066bfe12a96498960e21f12df859, type: 3}
+  alarmVolume: 0.65
   alarmLoops: 1
   alarmDuration: 60
   alarmSource: {fileID: 0}
@@ -79220,8 +79220,8 @@ MonoBehaviour:
   lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
-  alarmVolume: 0.75
+  alarmSound: {fileID: 8300000, guid: d1f2066bfe12a96498960e21f12df859, type: 3}
+  alarmVolume: 0.65
   alarmLoops: 1
   alarmDuration: 60
   alarmSource: {fileID: 0}
@@ -87929,7 +87929,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09b3877f84122574bbc76c30c5353f23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FPController
-  moveSpeed: 24
+  moveSpeed: 5
   gravity: -9.81
   jumpHeight: 1.5
   cameraTransform: {fileID: 330585546}
@@ -104220,8 +104220,8 @@ MonoBehaviour:
   lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
-  alarmVolume: 0.75
+  alarmSound: {fileID: 8300000, guid: d1f2066bfe12a96498960e21f12df859, type: 3}
+  alarmVolume: 0.65
   alarmLoops: 1
   alarmDuration: 60
   alarmSource: {fileID: 0}
@@ -109963,8 +109963,8 @@ MonoBehaviour:
   lockdownPatrolSpeed: 4
   lockdownColor: {r: 0.6, g: 0.1, b: 1, a: 1}
   lockdownLightIntensity: 8
-  alarmSound: {fileID: 8300000, guid: a712bc534a072a34b9f7194f1e66e85c, type: 3}
-  alarmVolume: 0.75
+  alarmSound: {fileID: 8300000, guid: d1f2066bfe12a96498960e21f12df859, type: 3}
+  alarmVolume: 0.65
   alarmLoops: 1
   alarmDuration: 60
   alarmSource: {fileID: 0}
