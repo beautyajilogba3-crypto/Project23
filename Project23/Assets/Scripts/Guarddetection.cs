@@ -97,6 +97,20 @@ public class GuardDetection : MonoBehaviour
     public float coneFloorHeight = 0.05f;
     public float coneWallCheckHeight = 1f;
 
+    [Header("Close Proximity Detection")]
+    [Tooltip("A guard can detect the player this close, even when the player is behind the guard or crouching.")]
+    [Min(0.1f)]
+    public float proximityDetectionRadius = 1.5f;
+
+    [Tooltip("Show the small proximity detection circle on the ground.")]
+    public bool showProximityRadius = true;
+
+    [Range(0f, 1f)]
+    public float proximityRadiusOpacity = 0.3f;
+
+    [Tooltip("Small height offset above the floor to prevent flickering.")]
+    public float proximityRadiusFloorOffset = 0.06f;
+
     [Header("Detection Sound")]
     public AudioClip detectedSound;
     [Range(0f, 1f)] public float detectedVolume = 1f;
@@ -171,6 +185,7 @@ public class GuardDetection : MonoBehaviour
     private bool investigateArrived = false;
 
     private VisionConeVisual visionCone;
+    private ProximityRadiusVisual proximityVisual;
     private float currentConeOpacity;
     private AudioSource audioSource;
     private float lastDetectedSoundTime = -999f;
@@ -183,9 +198,9 @@ public class GuardDetection : MonoBehaviour
     private Vector3 lastGuardPosition;
 
     private bool lockdown = false;
-    private static AudioSource activeAlarmSource; // so any guard can silence the alarm when the player is caught
+    private static AudioSource activeAlarmSource;
     private static float lastLockdownMessageTime = -999f;
-    private static float lastAlarmTime = -999f; // shared so several guards don't stack several alarms
+    private static float lastAlarmTime = -999f;
 
     void Awake()
     {
@@ -197,6 +212,7 @@ public class GuardDetection : MonoBehaviour
 
         SetupLight();
         SetupVisionCone();
+        SetupProximityVisual();
         SetupAudio();
         SetupAlarmAudio();
     }
@@ -219,16 +235,24 @@ public class GuardDetection : MonoBehaviour
         float distance = HorizontalDistance(transform.position, player.position);
         bool playerCrouched = playerController != null && playerController.IsCrouching;
 
+        // Close proximity detection works in every direction and even catches
+        // a crouching player, provided there is a clear line of sight.
+        bool proximityVisible = distance <= proximityDetectionRadius && HasLineOfSight();
+
         bool playerVisible;
         if (state == GuardState.Chasing)
         {
-            playerVisible = relentlessOnceSpotted
+            playerVisible = proximityVisible || (relentlessOnceSpotted
                 ? !playerCrouched
-                : !playerCrouched && distance <= detectionRange * loseRangeMultiplier;
+                : !playerCrouched && distance <= detectionRange * loseRangeMultiplier);
         }
         else
         {
-            playerVisible = !playerCrouched && IsInDetectionCone(distance) && HasLineOfSight();
+            bool hasLineOfSight = proximityVisible ||
+                (distance > proximityDetectionRadius && HasLineOfSight());
+
+            playerVisible = proximityVisible ||
+                (!playerCrouched && IsInDetectionCone(distance) && hasLineOfSight);
         }
 
         switch (state)
@@ -288,10 +312,10 @@ public class GuardDetection : MonoBehaviour
 
         UpdateDetectionLight();
         UpdateVisionCone();
+        UpdateProximityVisual();
     }
 
     // ---------- Lockdown ----------
-
     private void EnterLockdown()
     {
         if (lockdown)
@@ -629,7 +653,6 @@ public class GuardDetection : MonoBehaviour
         detectionLight.color = Color.Lerp(detectionLight.color, targetColor, t);
         detectionLight.intensity = Mathf.Lerp(detectionLight.intensity, targetIntensity, t);
     }
-
     // ---------- Vision cone ----------
 
     private void SetupVisionCone()
@@ -673,6 +696,69 @@ public class GuardDetection : MonoBehaviour
         visionCone.Configure(detectionRange, detectionAngle, activeColor, currentConeOpacity, coneHeight, obstacleMask, player);
     }
 
+    // ---------- Close proximity radius visual ----------
+
+    private void SetupProximityVisual()
+    {
+        if (!showProximityRadius)
+            return;
+
+        GameObject radiusObject = new GameObject("ProximityRadiusVisual");
+        radiusObject.transform.SetParent(transform, false);
+
+        proximityVisual = radiusObject.AddComponent<ProximityRadiusVisual>();
+
+        // Reuse the vision cone material so both detection visuals match.
+        Material visualMaterial = visionConeMaterial;
+        if (visualMaterial == null)
+        {
+            Shader shader = Shader.Find("Sprites/Default");
+            if (shader == null)
+                shader = Shader.Find("UI/Default");
+
+            if (shader != null)
+            {
+                visualMaterial = new Material(shader);
+                visualMaterial.name = "GuardDetectionVisualMaterial";
+                visionConeMaterial = visualMaterial;
+            }
+        }
+
+        if (visualMaterial == null)
+        {
+            Debug.LogError("Could not find a shader for the proximity radius visual.", this);
+            radiusObject.SetActive(false);
+            return;
+        }
+
+        proximityVisual.Initialize(visualMaterial, 48, proximityRadiusFloorOffset);
+    }
+
+    private void UpdateProximityVisual()
+    {
+        if (proximityVisual == null)
+            return;
+
+        proximityVisual.gameObject.SetActive(showProximityRadius);
+        if (!showProximityRadius)
+            return;
+
+        Color activeColor = patrolLightColor;
+
+        if (lockdown)
+            activeColor = lockdownColor;
+        else if (state == GuardState.Chasing)
+            activeColor = chaseLightColor;
+        else if (state == GuardState.Investigating)
+            activeColor = investigateLightColor;
+
+        proximityVisual.Configure(
+            proximityDetectionRadius,
+            activeColor,
+            proximityRadiusOpacity
+        );
+    }
+
     // ---------- Audio ----------
 
     private void SetupAudio()
@@ -701,7 +787,7 @@ public class GuardDetection : MonoBehaviour
 
         alarmSource.playOnAwake = false;
         alarmSource.loop = false;
-        alarmSource.spatialBlend = 0f; // 2D so the player hears it clearly wherever they are
+        alarmSource.spatialBlend = 0f;
     }
 
     private void PlayDetectedSound()
@@ -788,5 +874,20 @@ public class GuardDetection : MonoBehaviour
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(origin, catchRange);
+
+        // Flat outline showing the close-proximity detection radius.
+        Gizmos.color = Color.cyan;
+        const int proximitySegments = 32;
+        Vector3 previousProximityPoint = origin + Vector3.forward * proximityDetectionRadius;
+
+        for (int i = 1; i <= proximitySegments; i++)
+        {
+            float circleAngle = i * (360f / proximitySegments);
+            Vector3 nextPoint = origin +
+                Quaternion.Euler(0f, circleAngle, 0f) * Vector3.forward * proximityDetectionRadius;
+
+            Gizmos.DrawLine(previousProximityPoint, nextPoint);
+            previousProximityPoint = nextPoint;
+        }
     }
 }
