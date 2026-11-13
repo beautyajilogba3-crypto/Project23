@@ -844,14 +844,6 @@ public class GuardDetection : MonoBehaviour
             Debug.LogError("Game Over Manager is not assigned on GuardDetection!", this);
         }
     }
-        public static void StopLockdownAlarm()
-    {
-        if (activeAlarmSource != null)
-        {
-            activeAlarmSource.Stop();
-            activeAlarmSource = null;
-        }
-    }
 
     void OnDrawGizmosSelected()
     {
